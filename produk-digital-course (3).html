@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Starter Kit Produk Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#12211b;
+    --bg-panel:#1a2f27;
+    --bg-panel-2:#213a30;
+    --accent:#a9e8ae;
+    --accent-dim:#7fc98a;
+    --text-main:#f3f7f1;
+    --text-muted:#9fb5a9;
+    --border:#2b4438;
+    --radius-lg:22px;
+    --radius-md:14px;
+    --radius-sm:9px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg-deep);
+    color:var(--text-main);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Sora',sans-serif;}
+
+  /* ---------- App shell ---------- */
+  .app{
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:340px;
+    flex-shrink:0;
+    background:var(--bg-panel);
+    border-right:1px solid var(--border);
+    padding:28px 20px 40px;
+    height:100vh;
+    overflow-y:auto;
+    position:sticky;
+    top:0;
+  }
+  .sidebar-backdrop{display:none;}
+  .sidebar-close{display:none;}
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:6px;
+  }
+  .brand-name{font-family:'Sora',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.2px;}
+  .brand-sub{font-size:11.5px;color:var(--text-muted);margin:2px 0 26px 44px;}
+
+  .progress-wrap{margin-bottom:24px;}
+  .progress-label{
+    display:flex;justify-content:space-between;
+    font-size:11.5px;color:var(--text-muted);margin-bottom:8px;
+  }
+  .progress-track{
+    height:6px;background:var(--bg-deep);border-radius:99px;overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .progress-fill{
+    height:100%;width:0%;background:var(--accent);border-radius:99px;
+    transition:width .4s ease;
+  }
+
+  .module{
+    margin-bottom:6px;
+    border-radius:var(--radius-md);
+    overflow:hidden;
+  }
+  .module-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 12px;
+    cursor:pointer;
+    border-radius:var(--radius-md);
+    transition:background .15s ease;
+  }
+  .module-head:hover{background:var(--bg-panel-2);}
+  .module.active > .module-head{background:var(--bg-panel-2);}
+  .module-num{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    color:var(--accent);
+    background:rgba(169,232,174,0.12);
+    border:1px solid rgba(169,232,174,0.25);
+    border-radius:7px;
+    padding:4px 7px;
+    flex-shrink:0;
+  }
+  .module-title{
+    font-size:13.5px;
+    font-weight:600;
+    line-height:1.3;
+    flex:1;
+  }
+  .module-chevron{
+    color:var(--text-muted);
+    transition:transform .2s ease;
+    flex-shrink:0;
+  }
+  .module.open .module-chevron{transform:rotate(90deg);color:var(--accent);}
+  .module.done .module-num{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--bg-deep);
+  }
+  .module-done-tag{
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--accent);
+    background:rgba(169,232,174,0.12);
+    border:1px solid rgba(169,232,174,0.3);
+    border-radius:99px;
+    padding:2px 8px;
+    flex-shrink:0;
+  }
+
+  .lesson-list{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .3s ease;
+    padding-left:14px;
+  }
+  .module.open .lesson-list{max-height:900px;}
+  .lesson{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:9px 12px 9px 14px;
+    border-left:1px solid var(--border);
+    font-size:12.8px;
+    color:var(--text-muted);
+    cursor:pointer;
+    line-height:1.4;
+    transition:color .15s ease;
+  }
+  .lesson:hover{color:var(--text-main);}
+  .lesson.active{color:var(--accent);font-weight:600;}
+  .lesson-dot{
+    width:5px;height:5px;border-radius:50%;
+    background:var(--border);
+    margin-top:6px;flex-shrink:0;
+  }
+  .lesson.active .lesson-dot{background:var(--accent);}
+  .lesson.action{color:var(--accent-dim);font-style:italic;}
+
+  /* ---------- Main content ---------- */
+  .main{
+    flex:1;
+    padding:40px 48px 80px;
+    max-width:920px;
+  }
+  .grid-view{display:none;}
+
+  .eyebrow-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--accent);
+    color:var(--bg-deep);
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    padding:9px 18px;
+    border-radius:99px;
+    margin-bottom:28px;
+  }
+  .done-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:rgba(169,232,174,0.14);
+    color:var(--accent);
+    border:1px solid rgba(169,232,174,0.35);
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    padding:8px 16px;
+    border-radius:99px;
+    margin-bottom:28px;
+    margin-left:10px;
+  }
+  .hero-card{
+    background:linear-gradient(155deg, var(--bg-panel) 0%, #17281f 100%);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:44px 40px;
+    margin-bottom:32px;
+  }
+  .hero-title{
+    font-size:42px;
+    font-weight:800;
+    color:var(--accent);
+    line-height:1.08;
+    letter-spacing:-0.5px;
+    margin-bottom:20px;
+  }
+  .hero-desc{
+    font-size:15.5px;
+    color:#d7e3dc;
+    line-height:1.65;
+    max-width:60ch;
+    margin-bottom:28px;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--border);
+    padding:9px 15px;
+    border-radius:99px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-main);
+  }
+
+  .section-label{
+    font-family:'Sora',sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    margin:36px 0 16px;
+  }
+  .topic-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .topic-card{
+    background:var(--bg-panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    cursor:pointer;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .topic-card:hover{border-color:var(--accent-dim);transform:translateY(-1px);}
+  .topic-card.done{opacity:0.55;}
+  .topic-check{
+    width:26px;height:26px;flex-shrink:0;
+    border-radius:50%;
+    border:1.5px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;color:var(--accent);
+    padding:6px;
+    margin:-6px;
+  }
+  .topic-card.done .topic-check{background:var(--accent);border-color:var(--accent);color:var(--bg-deep);}
+  .topic-text{font-size:13.5px;font-weight:500;line-height:1.4;flex:1;}
+  .topic-card.action{border-style:dashed;}
+  .topic-card.action .topic-text{color:var(--accent-dim);}
+  .topic-mark-btn{
+    flex-shrink:0;
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.2px;
+    padding:7px 12px;
+    border-radius:99px;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text-muted);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .topic-mark-btn:hover{border-color:var(--accent-dim);color:var(--accent-dim);}
+  .topic-card.done .topic-mark-btn{background:var(--accent);border-color:var(--accent);color:var(--bg-deep);}
+
+  .tool-card{
+    background:linear-gradient(155deg, var(--bg-panel) 0%, #17281f 100%);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:28px 26px;
+    margin-bottom:18px;
+  }
+  .tool-card-head{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:14px;
+  }
+  .tool-card-icon{
+    width:44px;height:44px;flex-shrink:0;
+    border-radius:12px;
+    background:rgba(169,232,174,0.12);
+    border:1px solid rgba(169,232,174,0.3);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+  }
+  .tool-card-title{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    margin-bottom:2px;
+  }
+  .tool-card-tag{
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.3px;
+    text-transform:uppercase;
+    color:var(--accent-dim);
+  }
+  .tool-card-desc{
+    font-size:13.5px;
+    color:#d7e3dc;
+    line-height:1.65;
+    margin-bottom:20px;
+  }
+  .tool-card-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--accent);
+    color:var(--bg-deep);
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    padding:12px 22px;
+    border-radius:99px;
+    text-decoration:none;
+    transition:opacity .15s ease;
+  }
+  .tool-card-link:hover{opacity:0.85;}
+  .tool-card-link.pending{
+    background:transparent;
+    border:1.5px dashed var(--border);
+    color:var(--text-muted);
+    cursor:default;
+    pointer-events:none;
+  }
+  .tool-card-note{
+    font-size:11.5px;
+    color:var(--text-muted);
+    margin-top:10px;
+  }
+
+  .nav-buttons{
+    display:flex;
+    justify-content:space-between;
+    margin-top:40px;
+    gap:12px;
+  }
+  .nav-btn{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    padding:13px 22px;
+    border-radius:99px;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text-main);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .nav-btn.primary{
+    background:var(--accent);
+    color:var(--bg-deep);
+    border-color:var(--accent);
+  }
+  .nav-btn:hover{border-color:var(--accent-dim);}
+  .nav-btn:disabled{opacity:0.3;cursor:not-allowed;}
+
+  /* ---------- Reading view ---------- */
+  .reading-view{display:none;}
+  .reading-view.open{display:block;}
+  .back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:transparent;
+    border:none;
+    color:var(--text-muted);
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    margin-bottom:20px;
+    padding:0;
+  }
+  .back-btn:hover{color:var(--accent);}
+  .read-status{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    color:var(--accent-dim);
+    background:rgba(169,232,174,0.1);
+    border:1px solid rgba(169,232,174,0.25);
+    padding:7px 14px;
+    border-radius:99px;
+    margin-bottom:16px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .read-status:hover{border-color:var(--accent);}
+  .read-status.done{color:var(--bg-deep);background:var(--accent);border-color:var(--accent);}
+  .article-title{
+    font-size:32px;
+    font-weight:800;
+    line-height:1.15;
+    margin-bottom:24px;
+    max-width:26ch;
+  }
+  .article-body{
+    font-size:15.5px;
+    line-height:1.85;
+    color:#d7e3dc;
+    max-width:70ch;
+  }
+  .article-body p{margin-bottom:18px;}
+  .step-ordered-list{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:column;gap:12px;}
+  .step-ordered-list li{display:flex;align-items:flex-start;gap:12px;}
+  .step-ordered-list .step-ordered-num{
+    flex:0 0 auto;width:26px;height:26px;border-radius:50%;
+    background:var(--bg-panel-2);color:var(--accent, #7ee2a8);
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:700;line-height:1;
+  }
+  .step-ordered-list .step-ordered-text{padding-top:3px;}
+  .analysis-box{
+    background:rgba(232,200,119,0.1);
+    border-left:3px solid #e8c877;
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    margin-bottom:18px;
+    font-size:14.5px;
+    line-height:1.75;
+    color:var(--text-main);
+  }
+  .solution-card{
+    border-radius:var(--radius-sm);
+    padding:14px 16px;
+    margin-bottom:12px;
+    font-size:14.5px;
+    line-height:1.7;
+    color:var(--text-main);
+    border-left:3px solid;
+  }
+  .solution-card .solution-title{
+    display:block;
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    margin-bottom:4px;
+  }
+  .solution-card.var-a{background:rgba(169,232,174,0.1);border-color:var(--accent);}
+  .solution-card.var-a .solution-title{color:var(--accent);}
+  .solution-card.var-b{background:rgba(232,200,119,0.1);border-color:#e8c877;}
+  .solution-card.var-b .solution-title{color:#e8c877;}
+  .solution-card.var-c{background:rgba(138,180,248,0.1);border-color:#8ab4f8;}
+  .solution-card.var-c .solution-title{color:#8ab4f8;}
+  .solution-card.var-d{background:rgba(240,140,140,0.1);border-color:#f08c8c;}
+  .solution-card.var-d .solution-title{color:#f08c8c;}
+  .solution-card.var-e{background:rgba(199,146,234,0.1);border-color:#c792ea;}
+  .solution-card.var-e .solution-title{color:#c792ea;}
+  .flow-card{
+    background:var(--bg-panel-2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:16px 16px 14px;
+    margin-bottom:14px;
+  }
+  .flow-card .flow-title{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--text-main);
+    margin-bottom:10px;
+  }
+  .flow-row{display:flex;gap:10px;margin-bottom:8px;align-items:baseline;flex-wrap:wrap;}
+  .flow-row:last-child{margin-bottom:0;}
+  .flow-tag{
+    flex:0 0 auto;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    padding:2px 8px;
+    border-radius:99px;
+    white-space:nowrap;
+  }
+  .flow-tag.target{background:rgba(138,180,248,0.15);color:#8ab4f8;}
+  .flow-tag.masalah{background:rgba(232,200,119,0.15);color:#e8c877;}
+  .flow-tag.solusi{background:rgba(169,232,174,0.15);color:var(--accent);}
+  .flow-tag.produk{background:rgba(240,140,140,0.15);color:#f08c8c;}
+  .flow-text{font-size:13.5px;color:var(--text-main);line-height:1.5;}
+  .article-sentinel{height:1px;}
+
+  .prompt-box{
+    background:#0e1a15;
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:16px 18px;
+    margin-bottom:18px;
+    font-family:'SFMono-Regular',Consolas,'Courier New',monospace;
+    font-size:12.5px;
+    line-height:1.7;
+    color:#d7e6da;
+    white-space:pre-wrap;
+    overflow-x:auto;
+  }
+  .prompt-box .ph{color:var(--accent);}
+  .prompt-label{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .prompt-label span{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:11.5px;
+    letter-spacing:0.4px;
+    text-transform:uppercase;
+    color:var(--text-muted);
+  }
+  .copy-btn{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    font-weight:700;
+    padding:6px 12px;
+    border-radius:99px;
+    border:1px solid var(--border);
+    background:var(--bg-panel);
+    color:var(--text-main);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .copy-btn:hover{border-color:var(--accent-dim);color:var(--accent-dim);}
+  .copy-btn.copied{border-color:var(--accent);color:var(--accent);}
+
+  .module-end-banner{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    background:rgba(169,232,174,0.08);
+    border:1px solid rgba(169,232,174,0.3);
+    border-radius:var(--radius-md);
+    padding:16px 18px;
+    margin-top:28px;
+    margin-bottom:6px;
+  }
+  .module-end-banner svg{color:var(--accent);flex-shrink:0;margin-top:2px;}
+  .module-end-title{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:14px;
+    color:var(--accent);
+    margin-bottom:3px;
+  }
+  .module-end-sub{font-size:12.5px;color:var(--text-muted);line-height:1.5;}
+
+  /* ---------- Illustrations dalam materi ---------- */
+  .illus{
+    background:var(--bg-panel-2);
+    border:1px solid var(--border);
+    border-radius:var(--radius-md);
+    padding:22px 22px 20px;
+    margin-bottom:24px;
+  }
+  .illus-title{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:1px;
+    color:var(--accent-dim);
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+  .illus-row{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .illus-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    text-align:center;
+    flex:1;
+    min-width:84px;
+  }
+  .illus-icon{
+    width:44px;height:44px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(169,232,174,0.12);
+    border:1px solid rgba(169,232,174,0.3);
+    color:var(--accent);
+    flex-shrink:0;
+  }
+  .illus-icon.muted{
+    background:rgba(159,181,169,0.08);
+    border-color:var(--border);
+    color:var(--text-muted);
+  }
+  .illus-num{
+    width:32px;height:32px;border-radius:50%;
+    background:var(--accent);color:var(--bg-deep);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Sora',sans-serif;font-weight:800;font-size:13px;
+    flex-shrink:0;
+  }
+  .illus-label{font-size:12.5px;font-weight:600;color:var(--text-main);line-height:1.3;}
+  .illus-label.muted{color:var(--text-muted);font-weight:500;}
+  .illus-sub{font-size:11px;color:var(--text-muted);line-height:1.3;}
+  .illus-arrow{
+    color:var(--text-muted);
+    flex-shrink:0;
+    font-size:17px;
+    padding-top:11px;
+    line-height:1;
+  }
+  .illus-divider-vs{
+    font-family:'Sora',sans-serif;
+    font-weight:800;
+    font-size:11.5px;
+    color:var(--text-muted);
+    flex-shrink:0;
+    padding:12px 2px 0;
+  }
+  .illus-caption{
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px dashed var(--border);
+    font-size:12.5px;
+    color:var(--text-muted);
+    font-style:italic;
+    line-height:1.5;
+  }
+  .illus-formula-box{
+    background:var(--bg-deep);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:18px 20px;
+    font-family:'Sora',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    line-height:1.75;
+    color:var(--text-main);
+  }
+  .illus-formula-box .blank{color:var(--accent);font-weight:700;}
+  .illus-compare-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .illus-compare-grid.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  .illus-compare-card{
+    background:var(--bg-deep);
+    border:1px solid var(--border);
+    border-radius:var(--radius-sm);
+    padding:16px 16px 14px;
+  }
+  .illus-compare-title{
+    display:flex;align-items:center;gap:8px;
+    font-family:'Sora',sans-serif;font-weight:700;font-size:13px;color:var(--accent);margin-bottom:8px;
+  }
+  .illus-compare-desc{font-size:12px;color:var(--text-muted);line-height:1.55;}
+  .illus-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .illus-chips.stacked{flex-direction:column;}
+  .illus-chip{
+    display:inline-flex;align-items:center;gap:7px;
+    background:rgba(169,232,174,0.08);
+    border:1px solid var(--border);
+    padding:8px 13px;border-radius:99px;
+    font-size:12px;color:var(--text-main);
+  }
+  .illus-chip svg{color:var(--accent);flex-shrink:0;}
+  @media (max-width:600px){
+    .illus{padding:16px 16px 14px;}
+    .illus-compare-grid, .illus-compare-grid.cols-3{grid-template-columns:1fr;}
+    .illus-row{gap:12px;}
+  }
+  .reading-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:44px;
+    padding-top:24px;
+    border-top:1px solid var(--border);
+    gap:12px;
+  }
+
+  .mobile-topbar{display:none;}
+
+  /* ---------- Home view: kartu step ala referensi ---------- */
+  .home-view{display:none;}
+  .home-view.open{display:block;}
+  .home-heading{margin-bottom:28px;}
+  .home-title{font-size:28px;font-weight:800;margin-bottom:8px;}
+  .home-sub{font-size:14px;color:var(--text-muted);}
+  .step-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  .step-card{
+    border-radius:20px;
+    padding:24px 24px 20px;
+    display:flex;
+    flex-direction:column;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+    color:#1c2a22;
+  }
+  .step-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,0.25);}
+  .step-badge{
+    display:inline-block;
+    align-self:flex-start;
+    font-size:11.5px;
+    font-weight:700;
+    background:rgba(255,255,255,0.55);
+    padding:6px 12px;
+    border-radius:99px;
+    margin-bottom:16px;
+  }
+  .step-card-title{
+    font-family:'Sora',sans-serif;
+    font-size:19px;
+    font-weight:800;
+    margin-bottom:8px;
+  }
+  .step-card-desc{
+    font-size:13px;
+    line-height:1.55;
+    color:#3a4a40;
+    margin-bottom:18px;
+    min-height:40px;
+  }
+  .step-stats{
+    font-size:12.5px;
+    font-weight:600;
+    color:#3a4a40;
+    margin-bottom:16px;
+  }
+  .step-progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:11.5px;
+    color:#3a4a40;
+    margin-bottom:6px;
+  }
+  .step-progress-track{
+    height:6px;
+    background:rgba(0,0,0,0.12);
+    border-radius:99px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .step-progress-fill{
+    height:100%;
+    background:#182620;
+    border-radius:99px;
+  }
+  .step-card-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-top:16px;
+    border-top:1px solid rgba(0,0,0,0.1);
+  }
+  .step-card-footer span{font-size:12.5px;font-weight:600;color:#3a4a40;}
+  .step-go-btn{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    padding:10px 18px;
+    border-radius:99px;
+    border:none;
+    background:#182620;
+    color:#f3f7f1;
+    cursor:pointer;
+  }
+  .step-go-btn:hover{background:#0e1712;}
+
+  @media (max-width: 860px){
+    .step-grid{grid-template-columns:1fr;}
+  }
+
+  @media (max-width: 860px){
+    .app{flex-direction:column;}
+    .sidebar{
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      height:100dvh;
+      z-index:50;
+      transform:translateX(-100%);
+      transition:transform .25s ease;
+      border-right:none;
+      padding-top:64px;
+    }
+    .sidebar.open{display:block;transform:translateX(0);}
+    .sidebar-close{
+      display:flex;
+      position:absolute;
+      top:16px;right:16px;
+      width:36px;height:36px;
+      align-items:center;justify-content:center;
+      border-radius:50%;
+      border:1px solid var(--border);
+      background:var(--bg-panel-2);
+      color:var(--text-main);
+      font-size:16px;
+      cursor:pointer;
+    }
+    .sidebar-backdrop.show{
+      display:block;
+      position:fixed;inset:0;
+      background:rgba(8,14,11,0.6);
+      z-index:40;
+    }
+    .mobile-topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 16px;
+      background:var(--bg-panel);
+      border-bottom:1px solid var(--border);
+      position:sticky;top:0;z-index:10;
+    }
+    .main{padding:24px 16px 56px;}
+    .hero-title{font-size:28px;}
+    .hero-card{padding:26px 20px;}
+    .hero-desc{font-size:14px;}
+    .topic-grid{grid-template-columns:1fr;}
+    .topic-card{padding:14px 16px;}
+    .home-title{font-size:22px;}
+    .step-card{padding:20px 18px 18px;}
+    .article-title{font-size:24px;}
+    .article-body{font-size:14.5px;}
+    .illus-compare-grid.cols-3{grid-template-columns:1fr;}
+    .nav-buttons, .reading-nav{
+      flex-direction:column-reverse;
+      align-items:stretch;
+    }
+    .nav-buttons .nav-btn, .reading-nav .nav-btn{
+      width:100%;
+      text-align:center;
+      padding:14px 18px;
+    }
+  }
+
+  @media (max-width: 400px){
+    .hero-title{font-size:24px;}
+    .step-grid{gap:14px;}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M15 2v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 13h8M9 17h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M12 3 3 7.5 12 12l9-4.5L12 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M3 7.5V17l9 4.5V12M21 7.5V17l-9 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-person" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c1.2-4.5 5-6.5 8-6.5s6.8 2 8 6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 2a7 7 0 0 0-4 12.7c.8.6 1.2 1.3 1.2 2.3h5.6c0-1 .4-1.7 1.2-2.3A7 7 0 0 0 12 2Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 12 12 3h7a2 2 0 0 1 2 2v7l-9 9a2 2 0 0 1-2.8 0L3 14.8a2 2 0 0 1 0-2.8Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="16" cy="8" r="1.4" fill="currentColor"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A5.5 5.5 0 0 1 17.3 9.2 4 4 0 0 1 17 18H7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 12v6m0-6-2.3 2.3M12 12l2.3 2.3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 7l3 3" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="3" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="13" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="13" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5l-6 6 2.4 2.4 6-6a4 4 0 0 0 5-5.4l-2.7 2.7-2-2 2.7-2.7Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M4 4.5v17" stroke="currentColor" stroke-width="1.6"/></symbol>
+<symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="4" cy="6" r="1.3" fill="currentColor"/><circle cx="4" cy="12" r="1.3" fill="currentColor"/><circle cx="4" cy="18" r="1.3" fill="currentColor"/></symbol>
+</defs>
+</svg>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
+
+<div class="mobile-topbar">
+  <div class="brand" style="margin:0;cursor:pointer;" onclick="goHome()">
+    
+    <div class="brand-name">Starter Kit Produk Digital</div>
+  </div>
+  <button class="nav-btn" style="padding:8px 14px;font-size:12px;" onclick="toggleSidebar()">Daftar Isi</button>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-close" onclick="toggleSidebar(false)">✕</button>
+    <div class="brand" style="cursor:pointer;" onclick="goHome()">
+      
+      <div class="brand-name">Starter Kit Produk Digital</div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progressText">0 / 0 chapter</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div id="moduleList"></div>
+  </aside>
+
+  <main class="main">
+    <div class="home-view" id="homeView">
+      <div class="step-grid" id="stepGrid"></div>
+    </div>
+
+    <div class="grid-view" id="gridView">
+      <button class="back-btn" onclick="goHome()">← Semua step</button>
+      <span class="eyebrow-pill" id="moduleEyebrow">Step 01</span>
+      <span class="done-pill" id="moduleDonePill" style="display:none;">✓ Selesai</span>
+      <div class="hero-card">
+        <h1 class="hero-title" id="moduleTitle">Mengenal Produk Digital</h1>
+        <p class="hero-desc" id="moduleDesc">Pahami dulu apa itu produk digital, kenapa bisnis ini menarik untuk dijalankan, dan bagaimana alurnya bekerja dari nol.</p>
+      </div>
+
+      <div class="section-label">Daftar Isi</div>
+      <div class="topic-grid" id="topicGrid"></div>
+
+      <div class="nav-buttons">
+        <button class="nav-btn" id="prevBtn" onclick="goModule(-1)">← Step sebelumnya</button>
+        <button class="nav-btn primary" id="nextBtn" onclick="goModule(1)">Step selanjutnya →</button>
+      </div>
+    </div>
+
+    <div class="reading-view" id="readingView">
+      <button class="back-btn" onclick="closeReading()">← Kembali ke daftar isi</button>
+      <button class="read-status" id="readStatus" onclick="toggleCurrentReadingTopic()">Tandai selesai</button>
+      <h1 class="article-title" id="articleTitle"></h1>
+      <div class="article-body" id="articleBody"></div>
+      <div class="article-sentinel" id="articleSentinel"></div>
+      <div class="module-end-banner" id="moduleEndBanner" style="display:none;">
+        <svg width="20" height="20"><use href="#i-check"></use></svg>
+        <div>
+          <div class="module-end-title" id="moduleEndTitle"></div>
+          <div class="module-end-sub" id="moduleEndSub"></div>
+        </div>
+      </div>
+      <div class="reading-nav">
+        <button class="nav-btn" id="readPrevBtn" onclick="stepTopic(-1)">← Materi sebelumnya</button>
+        <button class="nav-btn primary" id="readNextBtn" onclick="stepTopic(1)">Materi selanjutnya →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const modules = [
+  {
+    title: "Mengenal Produk Digital",
+    desc: "Pahami dulu apa itu produk digital, kenapa bisnis ini menarik untuk dijalankan, dan bagaimana alurnya bekerja dari nol.",
+    topics: [
+      "Apa Itu Produk Digital?",
+      "Kenapa Produk Digital Menarik untuk Dijual?",
+      "Contoh Produk Digital",
+      "Cara Kerja Bisnis Produk Digital",
+      "Buat Sendiri vs Produk dengan Hak Jual Kembali",
+      "Alur Sederhana Memulai Produk Digital"
+    ]
+  },
+  {
+    title: "Menentukan Target Market",
+    desc: "Sebelum bikin produk, kamu perlu tahu persis siapa yang mau kamu bantu dan masalah apa yang mau kamu selesaikan.",
+    topics: [
+      "Kenapa Harus Menentukan Target Market?",
+      "Menentukan “Siapa” yang Mau Dibantu",
+      "Menemukan Masalah dan Kebutuhan",
+      "Menentukan Hasil yang Diinginkan",
+      "Rumus Menentukan Target Market",
+      "Contoh Target Market + Analisis"
+    ]
+  },
+  {
+    title: "Menentukan Produk",
+    desc: "Ubah masalah target market jadi produk yang jelas bentuknya dan masuk akal untuk dijual.",
+    topics: [
+      "Dari Masalah Menjadi Produk",
+      "Rumus Menentukan Produk",
+      "3 Jenis Solusi: Produk, Alat, Informasi",
+      "Contoh Target Market → Masalah → Solusi → Produk",
+      "Analisis Contoh Produk",
+      "Cara Memilih Produk yang Paling Masuk Akal untuk Dijual",
+      "Buat Sendiri atau Gunakan Produk Siap Jual?"
+    ]
+  },
+  {
+    title: "Menyiapkan Produk Siap Dijual",
+    desc: "Produk sudah siap. Sekarang saatnya kasih judul, mockup, deskripsi, lalu upload ke Lynk.",
+    topics: [
+      "Buat Judul Produk",
+      "Buat Mockup",
+      "Tulis Deskripsi Produk",
+      "Upload & Tes di Lynk"
+    ]
+  },
+  {
+    title: "Membuat Konten untuk Menjual Produk",
+    desc: "Produk sebagus apapun nggak akan laku tanpa konten yang tepat. Pelajari formula konten yang benar-benar mengarah ke penjualan.",
+    topics: [
+      "Kenapa Orang Membeli Produk?",
+      "Jangan Jual Produk, Jual Solusinya",
+      "Formula Konten: Masalah → Solusi → Produk → Jualan",
+      "Contoh Konten Jualan Berdasarkan Produk",
+      { action: true, text: "Buat Konten Pertamamu" }
+    ]
+  },
+  {
+    title: "Tools Bantu",
+    desc: "Tools tambahan yang bisa kamu pakai untuk mempercepat proses bikin konten dan produk digitalmu.",
+    topics: [
+      "Content Brain"
+    ]
+  },
+  {
+    title: "Bonus Prompt Anti Ribet",
+    desc: "Kumpulan prompt siap pakai. Tinggal copy, ganti bagian dalam kurung siku, dan paste ke AI favoritmu.",
+    topics: [
+      "Cara Pakai Prompt",
+      "01. Prompt Menentukan Target Market",
+      "02. Prompt Menemukan Masalah Target Market",
+      "03. Prompt Menentukan Produk yang Cocok",
+      "04. Prompt Menentukan Value Produk",
+      "05. Prompt Menentukan USP Produk",
+      "06. Prompt Mengubah Fitur Menjadi Manfaat",
+      "07. Prompt Menentukan Harga Produk",
+      "08. Prompt Membuat Penawaran Produk",
+      "09. Prompt Membuat Deskripsi Produk",
+      "10. Prompt Membuat CTA Jualan"
+    ]
+  },
+  {
+    title: "Bonus Worksheet",
+    desc: "20 lembar worksheet anak dengan hak jual kembali 100%, siap kamu jual lagi dan keuntungannya jadi milikmu.",
+    topics: [
+      "20 Lembar Worksheet (PDF)"
+    ]
+  }
+];
+
+const topicIllustration = {
+  "Apa Itu Produk Digital?": `
+    <div class="illus">
+      <div class="illus-row" style="justify-content:center;">
+        <div class="illus-item">
+          <div class="illus-icon muted"><svg width="22" height="22"><use href="#i-box"></use></svg></div>
+          <div class="illus-label muted">Produk fisik</div>
+          <div class="illus-sub">ada barang, perlu dikirim</div>
+        </div>
+        <div class="illus-divider-vs">VS</div>
+        <div class="illus-item">
+          <div class="illus-icon"><svg width="22" height="22"><use href="#i-doc"></use></svg></div>
+          <div class="illus-label">Produk digital</div>
+          <div class="illus-sub">file atau link, bukan barang</div>
+        </div>
+      </div>
+      <div class="illus-caption">Customer bayar → produk diterima dalam bentuk file, bukan paket.</div>
+    </div>`,
+  "Kenapa Produk Digital Menarik untuk Dijual?": `
+    <div class="illus">
+      <div class="illus-tag muted" style="font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin-bottom:6px;opacity:.65;">Produk fisik</div>
+      <div class="illus-row" style="margin-bottom:14px;">
+        <div class="illus-item"><div class="illus-icon muted"><svg width="22" height="22"><use href="#i-box"></use></svg></div><div class="illus-label muted">Barang</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon muted"><svg width="22" height="22"><use href="#i-tool"></use></svg></div><div class="illus-label muted">Packing</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon muted"><svg width="22" height="22"><use href="#i-cloud"></use></svg></div><div class="illus-label muted">Kirim</div></div>
+      </div>
+      <div class="illus-tag" style="font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin-bottom:6px;">Produk digital</div>
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-cloud"></use></svg></div><div class="illus-label">Upload sekali</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-tag"></use></svg></div><div class="illus-label">Terjual berkali-kali</div></div>
+      </div>
+      <div class="illus-caption">Produk fisik: 3 langkah tiap order. Produk digital: upload sekali, jual berulang.</div>
+    </div>`,
+  "Contoh Produk Digital": `
+    <div class="illus">
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-grid"></use></svg></div><div class="illus-label">Untuk anak</div><div class="illus-sub">printable, worksheet, game</div></div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-list"></use></svg></div><div class="illus-label">Produktivitas</div><div class="illus-sub">notion template, planner</div></div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-tag"></use></svg></div><div class="illus-label">Bisnis</div><div class="illus-sub">template keuangan, checklist</div></div>
+      </div>
+    </div>`,
+  "Cara Kerja Bisnis Produk Digital": `
+    <div class="illus">
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-bulb"></use></svg></div><div class="illus-label">Solusi</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-doc"></use></svg></div><div class="illus-label">Produk</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-cloud"></use></svg></div><div class="illus-label">Dipasang</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-search"></use></svg></div><div class="illus-label">Ditemukan</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-check"></use></svg></div><div class="illus-label">Terkirim</div></div>
+      </div>
+    </div>`,
+  "Buat Sendiri vs Produk dengan Hak Jual Kembali": `
+    <div class="illus">
+      <div class="illus-compare-grid">
+        <div class="illus-compare-card">
+          <div class="illus-compare-title"><svg width="16" height="16"><use href="#i-pen"></use></svg> Bikin sendiri</div>
+          <div class="illus-compare-desc">Dari skill/pengalaman kamu. Lebih lama, tapi unik dan membangun kepercayaan.</div>
+        </div>
+        <div class="illus-compare-card">
+          <div class="illus-compare-title"><svg width="16" height="16"><use href="#i-tag"></use></svg> Hak jual kembali</div>
+          <div class="illus-compare-desc">Pakai produk orang lain yang boleh dijual ulang. Cek lisensinya dulu.</div>
+        </div>
+      </div>
+    </div>`,
+  "Alur Sederhana Memulai Produk Digital": `
+    <div class="illus">
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-num">1</div><div class="illus-label">Siapa</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-num">2</div><div class="illus-label">Butuh apa</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-num">3</div><div class="illus-label">Produk</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-num">4</div><div class="illus-label">Pasang</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-num">5</div><div class="illus-label">Tawarkan</div></div>
+      </div>
+    </div>`,
+  "Kenapa Harus Menentukan Target Market?": `
+    <div class="illus">
+      <div class="illus-row" style="justify-content:center;">
+        <div class="illus-item">
+          <div class="illus-icon muted"><svg width="22" height="22"><use href="#i-person"></use></svg></div>
+          <div class="illus-label muted">“Untuk semua orang”</div>
+          <div class="illus-sub">nggak jelas siapa</div>
+        </div>
+        <div class="illus-divider-vs">VS</div>
+        <div class="illus-item">
+          <div class="illus-icon"><svg width="22" height="22"><use href="#i-target"></use></svg></div>
+          <div class="illus-label">Ibu, anak 3-6 tahun</div>
+          <div class="illus-sub">jelas siapa & butuhnya apa</div>
+        </div>
+      </div>
+    </div>`,
+  "Menentukan “Siapa” yang Mau Dibantu": `
+    <div class="illus">
+      <svg viewBox="0 0 280 220" width="100%" height="210" style="max-width:340px;display:block;margin:0 auto;">
+        <g>
+          <circle cx="105" cy="95" r="58" fill="var(--accent)" fill-opacity="0.16" stroke="var(--accent)" stroke-width="1.5"/>
+          <circle cx="163" cy="95" r="58" fill="var(--accent)" fill-opacity="0.16" stroke="var(--accent)" stroke-width="1.5"/>
+          <circle cx="134" cy="145" r="58" fill="var(--accent)" fill-opacity="0.16" stroke="var(--accent)" stroke-width="1.5"/>
+        </g>
+        <circle cx="134" cy="118" r="3" fill="var(--accent)"/>
+        <line x1="134" y1="118" x2="46" y2="52" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="134" y1="118" x2="234" y2="52" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="134" y1="118" x2="134" y2="204" stroke="var(--text-muted)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="20" y="44" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="var(--text-main)">Skill</text>
+        <text x="216" y="44" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="var(--text-main)">Pengalaman</text>
+        <text x="134" y="216" font-family="Inter,sans-serif" font-size="12" font-weight="600" fill="var(--text-main)" text-anchor="middle">Minat</text>
+      </svg>
+      <div class="illus-caption">Titik temu skill, pengalaman, dan minat kamu biasanya di situlah ide target market muncul.</div>
+    </div>`,
+  "Menemukan Masalah dan Kebutuhan": `
+    <div class="illus">
+      <div class="illus-row" style="justify-content:center;margin-bottom:14px;">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-person"></use></svg></div><div class="illus-label">Ibu, anak 3-6 th</div></div>
+        <div class="illus-arrow"><svg width="18" height="18"><use href="#i-search"></use></svg></div>
+        <div class="illus-item"><div class="illus-icon muted"><svg width="22" height="22"><use href="#i-bulb"></use></svg></div><div class="illus-label muted">Masalahnya?</div></div>
+      </div>
+      <div class="illus-chips" style="justify-content:center;">
+        <div class="illus-chip">Kehabisan ide</div>
+        <div class="illus-chip">Anak cepat bosan</div>
+        <div class="illus-chip">Kurangi screen time</div>
+        <div class="illus-chip">Nggak sempat siapkan bahan</div>
+      </div>
+    </div>`,
+  "Menentukan Hasil yang Diinginkan": `
+    <div class="illus">
+      <div class="illus-row" style="justify-content:center;">
+        <div class="illus-item"><div class="illus-icon muted"><svg width="22" height="22"><use href="#i-search"></use></svg></div><div class="illus-label muted">Masalah</div><div class="illus-sub">kehabisan ide aktivitas</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-target"></use></svg></div><div class="illus-label">Hasil</div><div class="illus-sub">aktivitas siap pakai, tinggal print</div></div>
+      </div>
+      <div class="illus-caption">Orang beli karena hasilnya, bukan karena file PDF-nya.</div>
+    </div>`,
+  "Rumus Menentukan Target Market": `
+    <div class="illus">
+      <div class="illus-formula-box">Saya membantu <span class="blank">[siapa]</span> untuk <span class="blank">[hasil/kebutuhan]</span> dengan cara <span class="blank">[solusi]</span>.</div>
+    </div>`,
+  "Contoh Target Market + Analisis": `
+    <div class="illus">
+      <div class="illus-compare-grid">
+        <div class="illus-compare-card"><div class="illus-compare-title"><svg width="16" height="16"><use href="#i-person"></use></svg> Contoh 1</div><div class="illus-compare-desc">Ibu, anak 3-6 tahun, ingin aktivitas edukatif tinggal print, dengan cara printable siap pakai.</div></div>
+        <div class="illus-compare-card"><div class="illus-compare-title"><svg width="16" height="16"><use href="#i-person"></use></svg> Contoh 2</div><div class="illus-compare-desc">Ingin lebih rapi mengatur pekerjaan, dengan cara planner harian siap pakai.</div></div>
+      </div>
+    </div>`,
+  "Dari Masalah Menjadi Produk": `
+    <div class="illus">
+      <div class="illus-row" style="justify-content:center;">
+        <div class="illus-item"><div class="illus-icon muted"><svg width="22" height="22"><use href="#i-search"></use></svg></div><div class="illus-label muted">Masalah</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-doc"></use></svg></div><div class="illus-label">Produk</div><div class="illus-sub">jalan pintas ke hasil</div></div>
+      </div>
+    </div>`,
+  "Rumus Menentukan Produk": `
+    <div class="illus">
+      <div class="illus-formula-box"><span class="blank">[Bentuk produk]</span> yang membantu <span class="blank">[target market]</span> mengatasi <span class="blank">[masalah]</span> supaya bisa <span class="blank">[hasil]</span>.</div>
+    </div>`,
+  "3 Jenis Solusi: Produk, Alat, Informasi": `
+    <div class="illus">
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-book"></use></svg></div><div class="illus-label">Produk</div><div class="illus-sub">e-book, kelas, panduan</div></div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-tool"></use></svg></div><div class="illus-label">Alat</div><div class="illus-sub">template, spreadsheet</div></div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-list"></use></svg></div><div class="illus-label">Informasi</div><div class="illus-sub">daftar, cheat sheet</div></div>
+      </div>
+    </div>`,
+  "Contoh Target Market → Masalah → Solusi → Produk": `
+    <div class="illus">
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-person"></use></svg></div><div class="illus-label">Target</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-search"></use></svg></div><div class="illus-label">Masalah</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-tool"></use></svg></div><div class="illus-label">Solusi</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-doc"></use></svg></div><div class="illus-label">Produk</div></div>
+      </div>
+    </div>`,
+  "Analisis Contoh Produk": `
+    <div class="illus">
+      <div class="illus-compare-grid cols-3">
+        <div class="illus-compare-card"><div class="illus-compare-title"><svg width="16" height="16"><use href="#i-book"></use></svg> MPASI</div><div class="illus-compare-desc">Masalah berulang harian → solusi siap pakai terasa bernilai.</div></div>
+        <div class="illus-compare-card"><div class="illus-compare-title"><svg width="16" height="16"><use href="#i-tool"></use></svg> Caption</div><div class="illus-compare-desc">Template langsung pakai, cocok yang waktunya terbatas.</div></div>
+        <div class="illus-compare-card"><div class="illus-compare-title"><svg width="16" height="16"><use href="#i-list"></use></svg> Bahasa</div><div class="illus-compare-desc">Kelas terstruktur menjawab keterbatasan waktu belajar.</div></div>
+      </div>
+    </div>`,
+  "Cara Memilih Produk yang Paling Masuk Akal untuk Dijual": `
+    <div class="illus">
+      <div class="illus-chips stacked">
+        <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Ada yang membutuhkan?</div>
+        <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Masalahnya jelas?</div>
+        <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Solusinya jelas?</div>
+        <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Mudah digunakan?</div>
+        <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Mudah dijelaskan?</div>
+      </div>
+    </div>`,
+  "Buat Sendiri atau Gunakan Produk Siap Jual?": `
+    <div class="illus">
+      <div class="illus-compare-grid">
+        <div class="illus-compare-card"><div class="illus-compare-title"><svg width="16" height="16"><use href="#i-pen"></use></svg> Bikin sendiri</div><div class="illus-compare-desc">Kamu punya pengetahuan spesifik, ingin produk unik dan membangun kepercayaan sebagai ahli.</div></div>
+        <div class="illus-compare-card"><div class="illus-compare-title"><svg width="16" height="16"><use href="#i-tag"></use></svg> Produk siap jual</div><div class="illus-compare-desc">Ingin mulai cepat atau menguji dulu apakah target market benar-benar mau beli.</div></div>
+      </div>
+    </div>`,
+  "Buat Mockup": `
+    <div class="illus">
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-tag"></use></svg></div><div class="illus-label">Nama produk</div></div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-grid"></use></svg></div><div class="illus-label">Bentuk produknya</div></div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-list"></use></svg></div><div class="illus-label">Beberapa bagian isi</div></div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-bulb"></use></svg></div><div class="illus-label">Manfaat utama</div></div>
+      </div>
+      <div class="illus-caption">Cukup 4 hal ini yang ditampilkan di mockup, supaya calon pembeli langsung paham apa yang mereka beli.</div>
+    </div>`
+};
+
+const topicContent = {
+  "Apa Itu Produk Digital?": [
+    "Produk digital itu sederhananya adalah produk yang berbentuk file atau link. Nggak ada bentuk fisiknya. Customer bayar, lalu produk diterima dalam bentuk digital.",
+    "Contohnya ebook, worksheet, template, game, prompt, custom GPT, web app, audio, sampai video.",
+    "Jadi kalau selama ini kamu mikir \"produk digital itu harus ebook, ya?\" Jawabannya nggak. Yang penting ada sesuatu yang berguna dan bisa diberikan dalam bentuk digital.",
+    "Misalnya kamu punya template untuk membantu orang mengatur keuangan. Itu produk digital. Kamu punya worksheet untuk anak. Itu produk digital. Kamu punya Notion template untuk mengatur pekerjaan. Itu juga produk digital."
+  ],
+  "Kenapa Produk Digital Menarik untuk Dijual?": [
+    "Salah satu alasan orang tertarik jualan produk digital adalah karena operasionalnya lebih sederhana dibanding produk fisik.",
+    "Kalau jual produk fisik, ada barang, stok, packing, baru kirim. Kalau produk digital, kamu tinggal upload produknya, jual, dan produk itu langsung terkirim secara digital.",
+    "Kamu nggak perlu menyimpan kardus di rumah. Nggak perlu packing setiap ada order. Dan satu produk bisa dijual ke banyak orang.",
+    "Misalnya kamu punya sebuah printable seharga Rp29.000. Hari ini terjual 1. Besok terjual 3. Minggu depan terjual 10. Kamu nggak perlu membuat barang baru setiap kali ada pembeli.",
+    "Tapi jangan salah paham. Produk digital bukan berarti pasti laku. Tetap harus ada orang yang membutuhkan produk tersebut. Makanya nanti kita akan mulai dari target market dan masalahnya."
+  ],
+  "Contoh Produk Digital": [
+    "Produk digital bisa sesederhana ini.",
+    "<strong>Untuk anak</strong> ada printable, worksheet, game edukasi, flashcard, activity pack, label nama, sampai jadwal pelajaran.",
+    "<strong>Untuk produktivitas</strong> ada Notion template, planner, tracker, dan spreadsheet jurnaling.",
+    "<strong>Untuk bisnis</strong> ada template keuangan, checklist stock, dan calculator online food.",
+    "Jadi jangan berpikir \"aku harus bikin sesuatu yang canggih.\" Nggak perlu. Kadang orang cuma butuh sesuatu yang bisa membuat pekerjaan mereka lebih mudah."
+  ],
+  "Cara Kerja Bisnis Produk Digital": [
+    "Gambarnya sebenarnya sederhana.",
+    "Kamu punya solusi. Solusi itu kamu jadikan produk. Produknya kamu pasang di tempat jualan. Orang menemukan produkmu, lalu membeli. Produk pun dikirim secara digital.",
+    "Selesai.",
+    "Yang perlu kamu pikirkan bukan \"bagaimana bikin bisnis yang besar?\" Untuk awal, cukup pikirkan \"masalah apa yang bisa aku bantu selesaikan?\""
+  ],
+  "Buat Sendiri vs Produk dengan Hak Jual Kembali": [
+    "Ada dua cara memulai.",
+    "Cara pertama, bikin sendiri. Kamu punya skill, pengalaman, atau pengetahuan tertentu, lalu kamu ubah menjadi produk. Misalnya kamu jago mengatur keuangan, kamu bisa membuat budget planner. Atau kamu punya pengalaman mengajar anak, kamu bisa membuat worksheet.",
+    "Cara kedua, menggunakan produk yang punya hak jual kembali. Ini cocok kalau kamu ngerasa \"gue pengen mulai jualan, tapi males bikin produknya dari nol.\" Kamu bisa menggunakan produk yang memang diberikan hak untuk dijual kembali.",
+    "Tapi hati-hati. Nggak semua produk digital boleh dijual kembali. Kalau kamu membeli produk orang lain, cek dulu lisensinya. Pastikan memang ada hak jual kembali, dan ikuti aturan yang diberikan pemilik produk."
+  ],
+  "Alur Sederhana Memulai Produk Digital": [
+    "Kalau disederhanakan, kamu cuma perlu melewati 5 tahap.",
+    `<ol class="step-ordered-list">
+      <li><span class="step-ordered-num">1</span><span class="step-ordered-text">Tentukan siapa yang mau kamu bantu.</span></li>
+      <li><span class="step-ordered-num">2</span><span class="step-ordered-text">Cari tahu mereka butuh apa.</span></li>
+      <li><span class="step-ordered-num">3</span><span class="step-ordered-text">Tentukan produk yang bisa membantu.</span></li>
+      <li><span class="step-ordered-num">4</span><span class="step-ordered-text">Pasang produk supaya bisa dibeli.</span></li>
+      <li><span class="step-ordered-num">5</span><span class="step-ordered-text">Mulai tawarkan.</span></li>
+    </ol>`,
+    "Caranya kita bahas di bagian selanjutnya."
+  ],
+  "Kenapa Harus Menentukan Target Market?": [
+    "Karena kamu nggak mungkin menjual sesuatu dengan pesan \"ini produk untuk semua orang.\"",
+    "Semakin kamu mencoba menjual ke semua orang, biasanya malah nggak jalan, karena kamu nggak punya target spesifik.",
+    "Coba bandingkan \"aku jual printable\" dengan \"aku bantu ibu dengan anak usia 3-6 tahun punya aktivitas edukatif yang tinggal print.\" Mana yang lebih gampang dipahami? Yang kedua.",
+    "Karena kita langsung tahu siapa orangnya, apa yang mereka butuhkan, dan apa solusinya."
+  ],
+  "Menentukan “Siapa” yang Mau Dibantu": [
+    "Nggak perlu mulai dari istilah marketing yang ribet. Coba lihat tiga hal ini.",
+    `<div class="illus-compare-grid cols-3">
+      <div class="illus-compare-card">
+        <div class="illus-compare-title">1. Skill kamu</div>
+        <div class="illus-compare-desc">Apa yang kamu bisa? Misalnya desain, masak, mengajar, Excel, jualan, atau mengatur keuangan.</div>
+      </div>
+      <div class="illus-compare-card">
+        <div class="illus-compare-title">2. Pengalaman kamu</div>
+        <div class="illus-compare-desc">Apa yang pernah kamu jalani? Misalnya kerja kantoran, punya usaha, mengajar, mengurus anak, atau mengatur keuangan keluarga.</div>
+      </div>
+      <div class="illus-compare-card">
+        <div class="illus-compare-title">3. Minat kamu</div>
+        <div class="illus-compare-desc">Apa yang memang kamu suka? Misalnya parenting, tanaman, masak, rumah, olahraga, AI, atau produktivitas.</div>
+      </div>
+    </div>`,
+    "Dari titik temu ketiganya, kamu mulai bisa melihat orang seperti apa yang mungkin membutuhkan hal yang kamu tahu."
+  ],
+  "Menemukan Masalah dan Kebutuhan": [
+    "Setelah tahu siapa orangnya, jangan langsung mikir produk. Cari tahu dulu mereka sebenarnya kesulitan di mana.",
+    "Misalnya targetnya ibu dengan anak usia 3-6 tahun. Jangan berhenti di \"mereka suka aktivitas anak.\" Cari lebih dalam sedikit.",
+    "Mungkin mereka kehabisan ide aktivitas, anaknya cepat bosan, ingin mengurangi screen time, ingin aktivitas yang edukatif, atau nggak punya waktu menyiapkan bahan.",
+    "Nah, ini jauh lebih berguna. Karena dari sini kamu mulai tahu masalah spesifik apa yang bisa kamu bantu selesaikan."
+  ],
+  "Menentukan Hasil yang Diinginkan": [
+    "Sekarang tanya, kalau masalah ini selesai, mereka maunya apa?",
+    "Misalnya masalahnya ibu kehabisan ide aktivitas anak. Hasil yang diinginkan adalah punya aktivitas yang bisa langsung diberikan ke anak.",
+    "Maka produk yang cocok bukan sekadar \"30 halaman PDF.\" Tapi \"30 aktivitas anak yang tinggal download dan print.\"",
+    "Ingat, orang membeli produk karena hasilnya. Bukan karena file PDF-nya."
+  ],
+  "Rumus Menentukan Target Market": [
+    "Pakai rumus ini. Saya membantu [siapa] untuk [hasil atau kebutuhan] dengan cara [solusi].",
+    "Contohnya, saya membantu ibu dengan anak usia 3-6 tahun untuk mendapatkan aktivitas edukatif yang mudah disiapkan, dengan menyediakan printable aktivitas siap pakai.",
+    "Sekarang coba punya kamu. Saya membantu ___, untuk ___, dengan cara ___."
+  ],
+  "Contoh Target Market + Analisis": [
+    "<strong>Contoh 1.</strong> Saya membantu ibu dengan anak usia 3-6 tahun untuk mendapatkan aktivitas edukatif yang tinggal print, dengan cara menyediakan printable aktivitas siap pakai.",
+    `<div class="analysis-box">Kenapa ini bagus? Karena kita tahu siapanya, yaitu ibu dengan anak 3-6 tahun. Hasilnya jelas, aktivitas edukatif yang tinggal digunakan. Caranya juga jelas, lewat printable siap pakai.</div>`,
+    "Dari sini kita sudah bisa mencari produk yang cocok, misalnya printable atau game edukasi.",
+    "<strong>Contoh 2.</strong> Saya membantu orang yang ingin lebih rapi mengatur pekerjaan, dengan cara menyediakan planner harian siap pakai.",
+    `<div class="analysis-box">Siapanya jelas, orang yang mau kerjanya lebih rapi. Hasilnya sistem yang lebih teratur. Caranya lewat planner harian yang tinggal dipakai. Produknya bisa berupa planner harian.</div>`
+  ],
+  "Dari Masalah Menjadi Produk": [
+    "Setelah target market dan masalahnya jelas, sekarang saatnya mengubah masalah itu jadi sesuatu yang bisa dijual. Ini titik di mana banyak orang justru bingung, masalahnya udah kelihatan, tapi nggak tahu harus dibungkus jadi produk seperti apa.",
+    "Kuncinya sederhana: produk adalah jalan pintas menuju hasil yang diinginkan. Kalau target market kamu ingin \"jadwal MPASI yang praktis tanpa mikir dari nol\", maka produk kamu adalah bentuk konkret dari jalan pintas itu, misalnya e-book jadwal MPASI 30 hari siap pakai.",
+    "Nggak semua masalah harus diselesaikan dengan produk yang rumit. Justru produk yang paling laku biasanya yang paling sederhana, tapi langsung kena ke inti masalah target market.",
+    "Di bab-bab berikutnya kamu akan belajar rumus dan jenis-jenis solusi supaya lebih gampang menerjemahkan masalah jadi ide produk yang konkret."
+  ],
+  "Rumus Menentukan Produk": [
+    "Sama seperti target market, menentukan produk juga bisa dibantu pakai rumus sederhana:",
+    `<div class="illus-formula-box" style="margin-bottom:18px;"><span class="blank">[Bentuk produk]</span> yang membantu <span class="blank">[target market]</span> mengatasi <span class="blank">[masalah]</span> supaya bisa <span class="blank">[hasil yang diinginkan]</span>.</div>`,
+    "Contoh: \"E-book jadwal MPASI 30 hari yang membantu ibu baru mengatasi bingung menyusun menu harian, supaya bisa punya jadwal makan anak yang praktis tanpa mikir dari nol.\"",
+    "Perhatikan bahwa rumus ini menyambungkan langsung ke rumus target market yang sudah kamu buat sebelumnya. Itu sebabnya penting untuk menyelesaikan bab target market dengan matang, supaya rumus produk ini tinggal disambung, bukan mengarang dari nol."
+  ],
+  "3 Jenis Solusi: Produk, Alat, Informasi": [
+    "Secara garis besar, solusi untuk masalah target market bisa dibagi jadi tiga jenis. Mengenali jenis ini membantu kamu memilih bentuk produk yang paling pas.",
+    `<div class="solution-card var-a"><span class="solution-title">1. Produk (Informasi terstruktur)</span>E-book, panduan, kelas online, template belajar. Cocok untuk masalah yang butuh penjelasan langkah demi langkah atau pengetahuan baru.</div>`,
+    `<div class="solution-card var-b"><span class="solution-title">2. Alat (Tools)</span>Template siap pakai, spreadsheet, aplikasi sederhana, checklist interaktif. Cocok untuk masalah yang butuh sesuatu yang langsung dipakai tanpa banyak mikir, tinggal isi atau tinggal jalankan.</div>`,
+    `<div class="solution-card var-c"><span class="solution-title">3. Informasi (Referensi cepat)</span>Kumpulan resep, daftar rekomendasi, database prompt, cheat sheet. Cocok untuk masalah yang butuh kumpulan jawaban cepat tanpa proses belajar panjang.</div>`,
+    "Satu masalah target market bisa diselesaikan dengan lebih dari satu jenis solusi. Tugas kamu adalah memilih jenis yang paling pas dengan kebiasaan dan preferensi target market kamu."
+  ],
+  "Contoh Target Market → Masalah → Solusi → Produk": [
+    "Biar lebih jelas alurnya, ini beberapa contoh lengkap dari target market sampai jadi produk:",
+    `<div class="flow-card">
+      <div class="flow-title">Contoh 1</div>
+      <div class="flow-row"><span class="flow-tag target">Target</span><span class="flow-text">Ibu baru bingung MPASI</span></div>
+      <div class="flow-row"><span class="flow-tag masalah">Masalah</span><span class="flow-text">Nggak ada waktu riset menu setiap hari</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">Solusi</span><span class="flow-text">Informasi terstruktur</span></div>
+      <div class="flow-row"><span class="flow-tag produk">Produk</span><span class="flow-text">E-book "30 Hari Menu MPASI Anti Ribet"</span></div>
+    </div>`,
+    `<div class="flow-card">
+      <div class="flow-title">Contoh 2</div>
+      <div class="flow-row"><span class="flow-tag target">Target</span><span class="flow-text">Karyawan mau mulai jualan online</span></div>
+      <div class="flow-row"><span class="flow-tag masalah">Masalah</span><span class="flow-text">Bingung bikin caption dan konten jualan</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">Solusi</span><span class="flow-text">Alat</span></div>
+      <div class="flow-row"><span class="flow-tag produk">Produk</span><span class="flow-text">Template Notion "100 Ide Caption Jualan Siap Pakai"</span></div>
+    </div>`,
+    `<div class="flow-card">
+      <div class="flow-title">Contoh 3</div>
+      <div class="flow-row"><span class="flow-tag target">Target</span><span class="flow-text">Karyawan yang mau lancar bahasa asing untuk kerja</span></div>
+      <div class="flow-row"><span class="flow-tag masalah">Masalah</span><span class="flow-text">Waktu belajar terbatas, bingung mulai dari mana</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">Solusi</span><span class="flow-text">Produk (kelas terstruktur)</span></div>
+      <div class="flow-row"><span class="flow-tag produk">Produk</span><span class="flow-text">Mini course "Kelas Bahasa Inggris Kerja untuk Karyawan Sibuk"</span></div>
+    </div>`,
+    "Perhatikan bahwa setiap produk lahir langsung dari masalah spesifik, bukan dari ide random yang kelihatan keren tapi nggak nyambung ke target market."
+  ],
+  "Analisis Contoh Produk": [
+    "Mari bedah kenapa contoh-contoh produk di atas bisa dibilang \"masuk akal untuk dijual\":",
+    "Produk MPASI kuat karena masalahnya berulang setiap hari (menyusun menu), jadi solusi yang sifatnya \"siap pakai\" terasa sangat bernilai. Pembeli menghemat waktu dan tenaga yang mereka keluarkan berulang kali.",
+    "Template caption jualan kuat karena masalahnya terasa setiap kali mau posting, dan bentuk template membuat pembeli bisa langsung pakai tanpa mikir dari nol. Cocok untuk orang yang waktunya terbatas karena masih kerja kantoran.",
+    "Mini course kelas bahasa untuk karyawan kuat karena masalahnya adalah waktu belajar yang terbatas, dan bentuk kelas terstruktur langsung menjawab kebutuhan itu.",
+    "Produk yang laku adalah yang bentuknya paling pas dengan cara target market ingin masalahnya diselesaikan, bukan sekadar bentuk yang paling gampang kamu buat."
+  ],
+  "Cara Memilih Produk yang Paling Masuk Akal untuk Dijual": [
+    "Sebelum membuat atau membeli produk, cek 5 hal ini.",
+    `<div class="solution-card var-a"><span class="solution-title">1. Ada yang membutuhkan?</span>Kalau tidak ada yang butuh, susah dijual.</div>`,
+    `<div class="solution-card var-b"><span class="solution-title">2. Masalahnya jelas?</span>Semakin jelas masalahnya, semakin mudah menjelaskan produk.</div>`,
+    `<div class="solution-card var-c"><span class="solution-title">3. Solusinya jelas?</span>Orang harus paham produkmu membantu apa.</div>`,
+    `<div class="solution-card var-d"><span class="solution-title">4. Mudah digunakan?</span>Semakin cepat orang bisa merasakan manfaatnya, semakin bagus.</div>`,
+    `<div class="solution-card var-e"><span class="solution-title">5. Mudah dijelaskan?</span>Kalau kamu perlu 20 menit untuk menjelaskan produk, mungkin positioning-nya masih terlalu rumit.</div>`
+  ],
+  "Buat Sendiri atau Gunakan Produk Siap Jual?": [
+    "Ada dua jalur untuk punya produk digital. Kamu bisa bikin sendiri dari nol, atau menggunakan produk yang sudah jadi (seperti produk dengan hak jual kembali/PLR) yang tinggal kamu sesuaikan.",
+    `<div class="solution-card var-a"><span class="solution-title">Bikin sendiri</span>Cocok kalau kamu punya pengetahuan atau pengalaman spesifik tentang masalah target market kamu, dan ingin produk yang unik serta membangun kepercayaan sebagai ahli. Butuh waktu lebih lama, tapi hasilnya lebih membedakan kamu dari kompetitor.</div>`,
+    `<div class="solution-card var-b"><span class="solution-title">Produk siap jual (PLR)</span>Cocok kalau kamu ingin mulai cepat, belum yakin dengan kemampuan bikin konten dari nol, atau ingin menguji dulu apakah target market benar-benar mau beli sebelum investasi waktu besar.</div>`,
+    "Nggak ada yang lebih benar di antara keduanya, pilih sesuai kondisi kamu sekarang. Yang penting, produk apapun yang kamu pilih harus tetap nyambung ke rumus target market dan masalah yang sudah kamu tentukan di bab sebelumnya."
+  ],
+  "Buat Judul Produk": [
+    "Jangan bikin judul yang terlalu kreatif sampai orang malah nggak tahu kamu jual apa. Judul yang bagus bikin orang langsung paham produknya dan manfaat utamanya.",
+    `<div class="illus">
+      <div class="illus-title">Formula Judul Produk</div>
+      <div class="illus-row" style="justify-content:center;">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-box"></use></svg></div><div class="illus-label">Apa produknya</div></div>
+        <div class="illus-arrow">+</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-target"></use></svg></div><div class="illus-label">Untuk siapa / manfaatnya</div></div>
+      </div>
+      <div class="illus-caption">Gabungkan dua bagian ini, dan orang langsung tahu apa yang kamu jual.</div>
+    </div>`,
+    `<div class="illus-compare-grid">
+      <div class="solution-card var-d"><span class="solution-title">Salah</span>Kids Fun Pack</div>
+      <div class="solution-card var-a"><span class="solution-title">Benar</span>30 Aktivitas Edukatif Anak 3–6 Tahun</div>
+      <div class="solution-card var-d"><span class="solution-title">Salah</span>Planner</div>
+      <div class="solution-card var-a"><span class="solution-title">Benar</span>Budget Planner untuk Mengatur Keuangan Rumah</div>
+      <div class="solution-card var-d"><span class="solution-title">Salah</span>Template Excel</div>
+      <div class="solution-card var-a"><span class="solution-title">Benar</span>Template Excel Pencatatan Pemasukan & Pengeluaran Harian</div>
+    </div>`,
+    "Daripada memilih nama yang terdengar menarik tapi bikin orang menebak-nebak, pilih judul yang sederhana dan langsung menjelaskan produknya. Semakin cepat orang paham, semakin mudah mereka memutuskan untuk melihat atau membeli produkmu."
+  ],
+  "Buat Mockup": [
+    "Sebelum membeli, orang ingin tahu \"sebenarnya aku dapat apa?\" Itulah fungsi mockup, gambaran produk yang ditampilkan di halaman jualan supaya calon pembeli bisa melihat bentuknya.",
+    "Nggak perlu desain yang ribet. Tampilkan saja nama produk, bentuk produknya, beberapa bagian isi, dan manfaat atau fitur utamanya.",
+    `<div class="illus-chips stacked">
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-doc"></use></svg> Jual printable? Tampilkan beberapa halamannya.</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-list"></use></svg> Jual Notion? Tampilkan tampilan dashboard-nya.</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-tool"></use></svg> Jual game/web app? Tampilkan screenshot saat digunakan.</div>
+    </div>`,
+    "Tujuan mockup bukan bikin produk terlihat mahal. Tujuannya bikin orang cepat paham apa yang mereka beli."
+  ],
+  "Tulis Deskripsi Produk": [
+    "Jangan cuma menjelaskan isi produk. Jelaskan dulu kenapa orang membutuhkan produk itu, baru masuk ke apa isinya dan apa yang mereka dapat.",
+    `<div class="illus">
+      <div class="illus-title">Formula Deskripsi Produk</div>
+      <div class="illus-row">
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-search"></use></svg></div><div class="illus-label">Masalah</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-bulb"></use></svg></div><div class="illus-label">Solusi</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-doc"></use></svg></div><div class="illus-label">Isi</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-check"></use></svg></div><div class="illus-label">Manfaat</div></div>
+        <div class="illus-arrow">→</div>
+        <div class="illus-item"><div class="illus-icon"><svg width="22" height="22"><use href="#i-tag"></use></svg></div><div class="illus-label">CTA</div></div>
+      </div>
+      <div class="illus-caption">Lima bagian ini yang bikin deskripsi terasa relevan buat calon pembeli, bukan sekadar daftar fitur.</div>
+    </div>`,
+    "Begini bentuknya kalau langsung dipraktikkan.",
+    `<div class="flow-card">
+      <div class="flow-title">Contoh Deskripsi Produk</div>
+      <div class="flow-row"><span class="flow-tag masalah">Masalah</span><span class="flow-text">Bingung mencari aktivitas edukatif untuk anak di rumah?</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">Solusi</span><span class="flow-text">Paket ini berisi 30 aktivitas untuk anak usia 3–6 tahun yang bisa langsung digunakan.</span></div>
+      <div class="flow-row"><span class="flow-tag produk">Isi</span><span class="flow-text">Tinggal download dan print, jadi kamu nggak perlu menyiapkan aktivitas dari nol.</span></div>
+      <div class="flow-row"><span class="flow-tag target">Manfaat</span><span class="flow-text">Cocok untuk menemani anak belajar sambil bermain.</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">CTA</span><span class="flow-text">Klik untuk mendapatkannya.</span></div>
+    </div>`,
+    "Nggak perlu deskripsi panjang. Cukup pastikan calon pembeli tahu empat hal ini sebelum mereka memutuskan membeli.",
+    `<div class="illus-chips">
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-person"></use></svg> Ini buat siapa</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-bulb"></use></svg> Membantu apa</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-box"></use></svg> Dapat apa</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-tag"></use></svg> Belinya di mana</div>
+    </div>`
+  ],
+  "Kenapa Orang Membeli Produk?": [
+    "Orang nggak membeli produk hanya karena produknya ada. Biasanya mereka punya masalah, kebutuhan, atau sesuatu yang ingin dibuat lebih mudah.",
+    `<div class="analysis-box">Misalnya ibu nggak sedang mencari “Printable anak.” Yang ada di kepalanya mungkin “Anak gue bosen terus. Main apa lagi, ya?” Nah, dari situlah konten dimulai.</div>`,
+    "Jadi sebelum mikir mau posting apa, coba tanya: “Orang yang butuh produkku biasanya sedang mengalami apa?”",
+    "Kalau kamu sudah tahu masalahnya, jauh lebih gampang menentukan apa yang mau dibicarakan."
+  ],
+  "Jangan Jual Produk, Jual Solusinya": [
+    "Bukan berarti kamu nggak boleh menyebut produk. Tetap jualan. Tapi jangan cuma menjelaskan apa yang kamu jual, jelaskan juga produk itu membantu apa.",
+    `<div class="illus-compare-grid">
+      <div class="illus-compare-card">
+        <div class="illus-compare-title">Sekadar jualan</div>
+        <div class="illus-compare-desc">“Aku jual printable 30 halaman.”</div>
+      </div>
+      <div class="illus-compare-card">
+        <div class="illus-compare-title">Jual solusinya</div>
+        <div class="illus-compare-desc">“Kehabisan ide aktivitas anak di rumah? Aku sudah siapkan 30 aktivitas yang tinggal print dan digunakan.”</div>
+      </div>
+    </div>`,
+    "Produknya sama. Tapi yang kedua lebih jelas karena orang langsung tahu: ini buat siapa → masalahnya apa → produk ini membantu apa.",
+    "Jangan cuma menjual barangnya. Tunjukkan kenapa orang membutuhkannya."
+  ],
+  "Formula Konten: Masalah → Solusi → Produk → Jualan": [
+    `<div class="flow-card">
+      <div class="flow-title">Masalah → Solusi → Produk → CTA</div>
+      <div class="flow-row"><span class="flow-tag masalah">Masalah</span><span class="flow-text">Anak mulai bosan di rumah dan kamu sudah kehabisan ide aktivitas?</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">Solusi</span><span class="flow-text">Coba kasih aktivitas yang nggak perlu gadget dan nggak membutuhkan banyak persiapan.</span></div>
+      <div class="flow-row"><span class="flow-tag produk">Produk</span><span class="flow-text">Aku sudah siapkan 30 aktivitas yang tinggal print dan digunakan.</span></div>
+      <div class="flow-row"><span class="flow-tag target">CTA</span><span class="flow-text">Cek link kalau mau lihat isinya.</span></div>
+    </div>`,
+    "Kalau memang mau jualan, keempat elemen ini bisa digabung jadi satu postingan. Sudah ada masalahnya, solusinya, produknya, dan ajakannya. Nggak perlu dibuat lebih rumit.",
+    `<div class="analysis-box">Alur ini bisa dipakai karena kamu nggak tiba-tiba muncul dan bilang “BELI PRODUK SAYA.” Ada konteksnya. Orang diajak mengenali masalah mereka, kemudian melihat solusinya, baru dikenalkan dengan produk yang kamu jual. Jadi produknya bisa langsung masuk sebagai jalan keluar dari masalah mereka.</div>`,
+    "Kalau mau bikin awareness, kamu bahkan bisa berhenti di Masalah → Solusi. Kalau mau jualan, lanjutkan ke produk dan CTA. Jadi satu ide bisa dipakai untuk beberapa jenis postingan."
+  ],
+  "Contoh Konten Jualan Berdasarkan Produk": [
+    "Elemen yang sama, tinggal disesuaikan dengan produk yang kamu jual. Berikut contohnya untuk tiga jenis produk yang berbeda.",
+    `<div class="flow-card">
+      <div class="flow-title">GAME EDUKASI</div>
+      <div class="flow-row"><span class="flow-tag masalah">1. Masalah</span><span class="flow-text">Anak suka main, tapi kamu tetap ingin waktu mainnya ada unsur belajarnya?</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">2. Solusi</span><span class="flow-text">Anak nggak harus selalu belajar lewat worksheet. Permainan juga bisa jadi cara untuk melatih kemampuan tertentu.</span></div>
+      <div class="flow-row"><span class="flow-tag produk">3. Produk</span><span class="flow-text">Game edukasi yang bisa langsung dimainkan anak tanpa perlu menyiapkan banyak bahan.</span></div>
+      <div class="flow-row"><span class="flow-tag target">4. CTA</span><span class="flow-text">Cek link kalau mau lihat gamenya.</span></div>
+    </div>`,
+    `<div class="analysis-box"><strong>Kalau disusun jadi konten:</strong><br><br>Anak suka main, tapi kamu tetap ingin waktu mainnya ada unsur belajarnya?<br><br>Anak nggak harus selalu belajar lewat worksheet. Permainan juga bisa jadi cara untuk melatih kemampuan tertentu.<br><br>Aku sudah siapkan game edukasi yang bisa langsung dimainkan tanpa perlu menyiapkan banyak bahan.<br><br>Cek link kalau mau lihat gamenya.</div>`,
+    `<div class="flow-card">
+      <div class="flow-title">PRINTABLE</div>
+      <div class="flow-row"><span class="flow-tag masalah">1. Masalah</span><span class="flow-text">Kehabisan ide aktivitas anak di rumah?</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">2. Solusi</span><span class="flow-text">Nggak perlu setiap hari mencari aktivitas baru. Punya beberapa aktivitas siap pakai bisa bikin kamu lebih gampang mengajak anak bermain.</span></div>
+      <div class="flow-row"><span class="flow-tag produk">3. Produk</span><span class="flow-text">Printable berisi aktivitas yang tinggal download dan print.</span></div>
+      <div class="flow-row"><span class="flow-tag target">4. CTA</span><span class="flow-text">Cek link kalau mau lihat isinya.</span></div>
+    </div>`,
+    `<div class="analysis-box"><strong>Kalau disusun jadi konten:</strong><br><br>Kehabisan ide aktivitas anak di rumah?<br><br>Nggak perlu setiap hari mencari aktivitas baru. Punya beberapa aktivitas siap pakai bisa bikin kamu lebih gampang mengajak anak bermain.<br><br>Aku sudah siapkan printable berisi aktivitas yang tinggal download dan print.<br><br>Cek link kalau mau lihat isinya.</div>`,
+    `<div class="flow-card">
+      <div class="flow-title">NOTION</div>
+      <div class="flow-row"><span class="flow-tag masalah">1. Masalah</span><span class="flow-text">Tugas masih dicatat di WhatsApp, Notes, kertas, sampai kepala sendiri?</span></div>
+      <div class="flow-row"><span class="flow-tag solusi">2. Solusi</span><span class="flow-text">Coba satukan semuanya di satu tempat supaya lebih gampang melihat apa yang harus dikerjakan.</span></div>
+      <div class="flow-row"><span class="flow-tag produk">3. Produk</span><span class="flow-text">Kalau nggak mau bikin sistemnya dari nol, gunakan template Notion yang sudah siap dipakai.</span></div>
+      <div class="flow-row"><span class="flow-tag target">4. CTA</span><span class="flow-text">Cek link kalau mau lihat templatenya.</span></div>
+    </div>`,
+    `<div class="analysis-box"><strong>Kalau disusun jadi konten:</strong><br><br>Tugas masih dicatat di WhatsApp, Notes, kertas, sampai kepala sendiri?<br><br>Coba satukan semuanya di satu tempat supaya lebih gampang melihat apa yang harus dikerjakan.<br><br>Kalau nggak mau bikin sistemnya dari nol, kamu bisa gunakan template Notion yang sudah siap dipakai.<br><br>Cek link kalau mau lihat templatenya.</div>`
+  ],
+  "Buat Konten Pertamamu": [
+    "Sampai di sini, kamu sudah punya semua bahan untuk mulai jualan.",
+    `<div class="illus-chips stacked">
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Produk yang mau dijual</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Target market yang jelas</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Masalah dan solusi yang ditawarkan</div>
+      <div class="illus-chip"><svg width="14" height="14"><use href="#i-check"></use></svg> Gambaran cara membuat kontennya</div>
+    </div>`,
+    "Sekarang waktunya eksekusi. Dan kamu nggak perlu duduk bengong mikirin hook atau caption dari nol, semua itu sudah dibantu lewat Content Brain.",
+    "Tinggal masukkan informasi produk dan target market-mu, lalu minta Content Brain membantu menemukan ide, membuat hook, menyusun isi, sampai mengarahkan kontennya ke jualan.",
+    `<ol class="step-ordered-list">
+      <li><span class="step-ordered-num">1</span><span class="step-ordered-text">Buka Content Brain</span></li>
+      <li><span class="step-ordered-num">2</span><span class="step-ordered-text">Masukkan produk yang sudah kamu siapkan</span></li>
+      <li><span class="step-ordered-num">3</span><span class="step-ordered-text">Buat 1 konten pertamamu</span></li>
+      <li><span class="step-ordered-num">4</span><span class="step-ordered-text">Posting, lalu lihat hasilnya</span></li>
+    </ol>`,
+    "Setelah posting, perhatikan responsnya: konten mana yang paling banyak dilihat, mana yang bikin orang penasaran, dan mana yang akhirnya mengarah ke penjualan. Catat polanya, lalu ulangi.",
+    "Kalau satu angle berhasil, coba lagi dengan masalah atau sudut yang berbeda. Kalau belum berhasil, jangan langsung menyerah, ganti angle atau hook-nya dan coba lagi.",
+    `<div class="analysis-box">Lama-lama kamu akan mulai tahu target market-mu lebih tertarik dengan konten seperti apa. Dari situlah konten mulai bekerja untuk bisnismu, bukan karena satu konten ajaib, tapi karena kamu terus mencoba sampai menemukan pola yang menghasilkan. Dan kamu nggak perlu mikirin semuanya dari nol, Content Brain sudah siap membantu.</div>`
+  ],
+  "Upload & Tes di Lynk": [
+    "Sekarang produkmu tinggal dipasang supaya bisa dibeli. Di Lynk, alurnya sederhana.",
+    `<ol class="step-ordered-list">
+      <li><span class="step-ordered-num">1</span><span class="step-ordered-text">Tambah produk</span></li>
+      <li><span class="step-ordered-num">2</span><span class="step-ordered-text">Upload file</span></li>
+      <li><span class="step-ordered-num">3</span><span class="step-ordered-text">Masukkan judul</span></li>
+      <li><span class="step-ordered-num">4</span><span class="step-ordered-text">Masukkan deskripsi</span></li>
+      <li><span class="step-ordered-num">5</span><span class="step-ordered-text">Tentukan harga</span></li>
+      <li><span class="step-ordered-num">6</span><span class="step-ordered-text">Publish</span></li>
+    </ol>`,
+    "Untuk harga, nggak perlu terlalu dipusingkan di awal. Pilih harga yang masuk akal untuk targetmu, bandingkan dengan produk sejenis, lalu uji respons pasar."
+  ],
+  "Cara Pakai Prompt": [
+    "Udah siap cuan?",
+    "Kalau produknya sudah ada, jangan sampai malah berhenti gara-gara bingung mau ngapain lagi.",
+    "Nggak perlu mikir semuanya sendiri. Di sini sudah disiapkan prompt yang bisa kamu copy, isi, dan langsung pakai untuk membantumu dari menentukan target market, menemukan masalah, menentukan produk, sampai menyiapkan penawaran.",
+    `<div class="analysis-box"><strong>Cara pakai:</strong></div>`,
+    `<ol class="step-ordered-list">
+      <li><span class="step-ordered-num">1</span><span class="step-ordered-text">Pilih prompt yang kamu butuhkan.</span></li>
+      <li><span class="step-ordered-num">2</span><span class="step-ordered-text">Copy prompt-nya.</span></li>
+      <li><span class="step-ordered-num">3</span><span class="step-ordered-text">Ganti bagian [dalam kurung siku].</span></li>
+      <li><span class="step-ordered-num">4</span><span class="step-ordered-text">Paste ke ChatGPT atau AI yang kamu gunakan.</span></li>
+      <li><span class="step-ordered-num">5</span><span class="step-ordered-text">Ikuti hasilnya dan lanjut ke langkah berikutnya.</span></li>
+    </ol>`
+  ],
+  "01. Prompt Menentukan Target Market": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Saya ingin menjual produk digital dan masih bingung menentukan target market yang paling tepat.
+
+Produk saya:
+<span class="ph">[NAMA PRODUK]</span>
+
+Deskripsi singkat:
+<span class="ph">[DESKRIPSI PRODUK]</span>
+
+Bantu saya menentukan target market yang paling cocok untuk produk ini.
+
+Cari target market yang:
+- punya masalah yang relevan dengan produk saya
+- membutuhkan solusi seperti produk saya
+- cukup spesifik untuk ditargetkan
+- memiliki kemungkinan membeli produk digital
+
+Berikan 5 pilihan target market.
+
+Untuk setiap target market, jelaskan:
+1. Siapa mereka
+2. Masalah utama mereka
+3. Kebutuhan mereka
+4. Keinginan mereka
+5. Hambatan mereka
+6. Alasan mereka mungkin membeli produk saya
+
+Di akhir, pilih 1 target market yang paling potensial dan jelaskan alasannya.
+
+Gunakan bahasa sederhana dan jangan menggunakan istilah marketing yang rumit.</div>`
+  ],
+  "02. Prompt Menemukan Masalah Target Market": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Saya sudah tahu target market saya, tetapi masih bingung masalah apa yang bisa saya angkat.
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Produk saya:
+<span class="ph">[NAMA PRODUK]</span>
+
+Deskripsi produk:
+<span class="ph">[DESKRIPSI PRODUK]</span>
+
+Bantu saya menemukan masalah nyata yang kemungkinan dialami target market saya.
+
+Cari masalah yang berkaitan dengan:
+- aktivitas sehari-hari
+- hal yang membuat mereka kesulitan
+- hal yang membuat mereka frustrasi
+- hal yang mereka khawatirkan
+- hal yang ingin mereka capai
+- hal yang sering membuat mereka menunda
+- hal yang membuat mereka mencari atau membeli solusi
+
+Berikan 20 masalah yang spesifik dan relatable.
+
+Hindari masalah yang terlalu umum atau terdengar seperti teori marketing.
+
+Untuk setiap masalah, jelaskan:
+1. Masalahnya
+2. Kenapa masalah ini penting bagi mereka
+3. Solusi seperti apa yang kemungkinan mereka cari
+
+Di akhir, pilih 5 masalah yang paling kuat untuk dijadikan dasar produk dan konten.</div>`
+  ],
+  "03. Prompt Menentukan Produk yang Cocok": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Saya sudah tahu target market dan masalah mereka, tetapi bingung produk digital apa yang sebaiknya saya buat.
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Masalah utama:
+<span class="ph">[MASALAH]</span>
+
+Bantu saya menemukan ide produk digital yang sederhana, mudah dibuat, dan punya nilai jual.
+
+Berikan 10 ide produk.
+
+Untuk setiap ide, berikan:
+1. Nama produk
+2. Masalah yang diselesaikan
+3. Bentuk produk
+4. Isi utama
+5. Manfaat bagi pembeli
+6. Tingkat kesulitan membuatnya: mudah/sedang/sulit
+7. Potensi dijual: rendah/sedang/tinggi
+
+Prioritaskan produk yang:
+- bisa dibuat pemula
+- tidak membutuhkan waktu terlalu lama
+- menyelesaikan masalah yang jelas
+- mudah dijelaskan manfaatnya
+- bisa dijual secara online
+
+Di akhir, pilih 3 ide terbaik dan rekomendasikan 1 yang paling realistis untuk saya mulai.</div>`
+  ],
+  "04. Prompt Menentukan Value Produk": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Bantu saya menemukan value utama dari produk digital saya.
+
+Produk:
+<span class="ph">[NAMA PRODUK]</span>
+
+Isi produk:
+<span class="ph">[ISI PRODUK]</span>
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Masalah target market:
+<span class="ph">[MASALAH]</span>
+
+Jawab pertanyaan berikut:
+
+1. Masalah apa yang produk ini bantu selesaikan?
+2. Apa yang menjadi lebih mudah setelah menggunakan produk ini?
+3. Apa yang bisa dihemat pembeli? Misalnya waktu, tenaga, atau biaya.
+4. Hasil apa yang bisa mereka dapatkan?
+5. Kenapa hasil tersebut penting bagi mereka?
+6. Kenapa mereka memilih membeli produk ini daripada membuat sendiri?
+
+Lalu buatkan:
+- 1 value proposition utama
+- 5 manfaat utama
+- 5 kalimat sederhana dengan format:
+  "Produk ini membantu kamu..."
+
+Gunakan bahasa natural dan mudah dipahami.
+
+Jangan menggunakan bahasa iklan yang berlebihan.</div>`
+  ],
+  "05. Prompt Menentukan USP Produk": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Saya punya produk digital tetapi khawatir produk saya terlihat sama dengan produk lain.
+
+Produk saya:
+<span class="ph">[NAMA PRODUK]</span>
+
+Deskripsi:
+<span class="ph">[DESKRIPSI PRODUK]</span>
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Bantu saya menemukan pembeda atau USP yang bisa saya gunakan untuk memposisikan produk saya.
+
+Analisis:
+- siapa target market saya
+- masalah utama mereka
+- apa yang biasanya ditawarkan produk sejenis
+- apa yang bisa saya tonjolkan
+- apa keunggulan produk saya
+
+Berikan 10 kemungkinan USP.
+
+USP harus:
+- sederhana
+- mudah dipahami
+- relevan dengan target market
+- tidak mengada-ada
+- bisa digunakan dalam konten dan penawaran
+
+Di akhir, pilih 3 USP paling kuat dan jelaskan alasannya.</div>`
+  ],
+  "06. Prompt Mengubah Fitur Menjadi Manfaat": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Saya punya daftar fitur produk tetapi bingung menjelaskan manfaatnya kepada calon pembeli.
+
+Produk:
+<span class="ph">[NAMA PRODUK]</span>
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Fitur produk:
+<span class="ph">[DAFTAR FITUR]</span>
+
+Ubah setiap fitur menjadi manfaat yang mudah dipahami calon pembeli.
+
+Buat dalam format:
+
+FITUR:
+[fitur]
+
+ARTINYA BAGI PEMBELI:
+[apa artinya bagi mereka]
+
+MANFAAT:
+[manfaat yang mereka dapat]
+
+HASIL:
+[apa yang menjadi lebih mudah atau lebih baik setelah menggunakan produk]
+
+Jangan hanya mengulang fitur.
+
+Gunakan sudut pandang pembeli:
+"Jadi saya dapat apa?"
+
+Setelah itu buat 10 kalimat manfaat yang bisa langsung digunakan untuk menjelaskan produk.</div>`
+  ],
+  "07. Prompt Menentukan Harga Produk": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Saya bingung menentukan harga untuk produk digital saya.
+
+Produk:
+<span class="ph">[NAMA PRODUK]</span>
+
+Bentuk produk:
+<span class="ph">[JENIS PRODUK]</span>
+
+Isi produk:
+<span class="ph">[ISI PRODUK]</span>
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Value/manfaat:
+<span class="ph">[VALUE PRODUK]</span>
+
+Bantu saya menentukan harga yang masuk akal.
+
+Berikan:
+1. Harga minimum
+2. Harga ideal
+3. Harga premium
+4. Alasan masing-masing harga
+5. Kapan sebaiknya menggunakan masing-masing harga
+6. Ide harga launching atau promo jika diperlukan
+
+Pertimbangkan:
+- value produk
+- masalah yang diselesaikan
+- waktu atau tenaga yang dihemat pembeli
+- kedalaman isi
+- target market
+- kemudahan penggunaan
+- positioning produk
+
+Jangan menentukan harga hanya berdasarkan jumlah halaman atau jumlah file.
+
+Berikan rekomendasi harga akhir yang paling realistis untuk saya mulai.</div>`
+  ],
+  "08. Prompt Membuat Penawaran Produk": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Bantu saya membuat penawaran produk digital yang menarik tanpa menggunakan klaim berlebihan.
+
+Produk:
+<span class="ph">[NAMA PRODUK]</span>
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Masalah:
+<span class="ph">[MASALAH]</span>
+
+Manfaat produk:
+<span class="ph">[MANFAAT]</span>
+
+Harga:
+<span class="ph">[HARGA]</span>
+
+Bonus jika ada:
+<span class="ph">[BONUS]</span>
+
+Buatkan penawaran dengan struktur:
+
+1. Headline
+2. Masalah target market
+3. Solusi yang ditawarkan
+4. Apa yang didapatkan pembeli
+5. Manfaat utama
+6. Bonus
+7. Harga
+8. Alasan produk ini layak dibeli
+9. CTA
+
+Buat 3 versi:
+- Soft selling
+- Natural
+- Direct selling
+
+Gunakan bahasa Indonesia yang natural.
+
+Hindari:
+- klaim berlebihan
+- janji hasil yang tidak realistis
+- bahasa yang terlalu memaksa</div>`
+  ],
+  "09. Prompt Membuat Deskripsi Produk": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Buatkan deskripsi produk digital yang siap saya gunakan untuk menjual produk.
+
+Nama produk:
+<span class="ph">[NAMA PRODUK]</span>
+
+Jenis produk:
+<span class="ph">[JENIS PRODUK]</span>
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Masalah:
+<span class="ph">[MASALAH]</span>
+
+Isi produk:
+<span class="ph">[ISI PRODUK]</span>
+
+Manfaat:
+<span class="ph">[MANFAAT]</span>
+
+Harga:
+<span class="ph">[HARGA]</span>
+
+Bonus:
+<span class="ph">[BONUS]</span>
+
+Gunakan struktur:
+
+1. Headline
+2. Untuk siapa produk ini
+3. Masalah yang mereka alami
+4. Solusi yang ditawarkan
+5. Apa yang akan mereka dapatkan
+6. Isi produk
+7. Manfaat
+8. Bonus
+9. Harga
+10. CTA
+
+Gunakan bahasa Indonesia yang natural, jelas, dan mudah dipahami.
+
+Jangan menggunakan kata-kata seperti:
+- terbaik
+- revolusioner
+- dijamin berhasil
+- pasti menghasilkan
+
+Jangan membuat klaim yang tidak bisa dibuktikan.</div>`
+  ],
+  "10. Prompt Membuat CTA Jualan": [
+    `<div class="prompt-label"><span>Copy Prompt</span><button class="copy-btn" onclick="copyPromptBox(this)">Copy</button></div>`,
+    `<div class="prompt-box">Saya sudah punya konten atau penawaran, tetapi selalu bingung membuat CTA.
+
+Konteks konten:
+<span class="ph">[ISI SINGKAT KONTEN]</span>
+
+Produk:
+<span class="ph">[NAMA PRODUK]</span>
+
+Target market:
+<span class="ph">[TARGET MARKET]</span>
+
+Tujuan CTA:
+<span class="ph">[CONTOH: klik link / beli / DM / cek produk]</span>
+
+Buatkan 20 CTA yang:
+- natural
+- tidak memaksa
+- sesuai dengan konteks
+- membuat orang tahu langkah berikutnya
+- tidak terdengar seperti iklan murahan
+
+Kelompokkan menjadi:
+
+5 CTA soft selling
+5 CTA curiosity
+5 CTA direct selling
+5 CTA urgency
+
+Gunakan bahasa sehari-hari.
+
+Hindari CTA yang terlalu generik seperti:
+"Yuk beli sekarang!"
+"Jangan sampai ketinggalan!"</div>`
+  ],
+  "Content Brain": [
+    `<div class="tool-card">
+      <div class="tool-card-head">
+        <div class="tool-card-icon"><svg width="22" height="22"><use href="#i-bulb"></use></svg></div>
+        <div>
+          <div class="tool-card-tag">Tools Bantu</div>
+          <div class="tool-card-title">Content Brain</div>
+        </div>
+      </div>
+      <div class="tool-card-desc">Content Brain adalah asisten AI yang bantu kamu brainstorming ide, angle, dan draft konten lebih cepat, mulai dari menentukan masalah target market sampai menyusun konten jualan sesuai formula yang sudah kamu pelajari di kursus ini. Klik tombol di bawah untuk buka toolsnya.</div>
+      <a id="contentBrainLink" class="tool-card-link" href="https://chatgpt.com/g/g-6a22f7c3c6488191a977d1fdcf4b9542-content-brain-generator-ide-konten" target="_blank" rel="noopener">Buka Content Brain →</a>
+    </div>`,
+    `<div class="analysis-box"><strong>Cara Pakai Content Brain</strong></div>`,
+    `<ol class="step-ordered-list">
+      <li><span class="step-ordered-num">1</span><span class="step-ordered-text">Klik tombol "Buka Content Brain →" di atas. Kamu akan diarahkan ke ChatGPT, jadi pastikan sudah login akun ChatGPT (gratis atau berbayar, dua-duanya bisa).</span></li>
+      <li><span class="step-ordered-num">2</span><span class="step-ordered-text">Ceritakan konteksmu di chat pertama. Siapa target marketmu, produk digital apa yang kamu jual, dan platform konten yang kamu pakai (TikTok, Instagram, dll).</span></li>
+      <li><span class="step-ordered-num">3</span><span class="step-ordered-text">Minta ide sesuai kebutuhan. Contohnya "kasih 10 ide konten soal [masalah target market]" atau "buatin angle konten dari masalah ke solusi untuk produk [nama produk]".</span></li>
+      <li><span class="step-ordered-num">4</span><span class="step-ordered-text">Pilih ide yang paling cocok, lalu minta Content Brain kembangkan jadi draft caption, hook, atau naskah konten lengkap.</span></li>
+      <li><span class="step-ordered-num">5</span><span class="step-ordered-text">Edit sedikit pakai gaya bahasamu sendiri sebelum diposting, supaya tetap terasa natural dan bukan seperti tulisan AI mentah.</span></li>
+    </ol>`,
+    "Semakin detail konteks yang kamu kasih di awal chat, semakin tajam juga ide yang dikeluarkan. Jangan ragu buat lanjut nanya atau minta variasi lain kalau ide pertama belum pas."
+  ],
+  "20 Lembar Worksheet (PDF)": [
+    `<div class="tool-card">
+      <div class="tool-card-head">
+        <div class="tool-card-icon"><svg width="22" height="22"><use href="#i-doc"></use></svg></div>
+        <div>
+          <div class="tool-card-tag">Bonus</div>
+          <div class="tool-card-title">20 Lembar Worksheet</div>
+        </div>
+      </div>
+      <div class="tool-card-desc">Berisi worksheet anak yang bisa langsung kamu jual lagi, dengan hak jual kembali 100%. Semua keuntungan dari penjualannya jadi milikmu sepenuhnya. Klik tombol di bawah untuk download filenya.</div>
+      <a id="worksheetPdfLink" class="tool-card-link" href="https://drive.google.com/drive/folders/1OJRC9IZzBQATZNDeMHSXkdWT1K27rcz3?usp=drive_link" target="_blank" rel="noopener">Download Worksheet (PDF) →</a>
+    </div>`
+  ]
+};
+
+let currentModule = 0;
+let currentView = "home"; // "home" | "step" | "reading"
+let completed = new Set(); // keys "moduleIdx-topicIdx"
+let expandedModules = new Set([0]); // modul mana saja yang daftar sub-babnya lagi terbuka di sidebar
+
+const stepColors = [
+  "#e4e1d8",
+  "#dbe0e2",
+  "#e8ddc9",
+  "#d9e0da",
+  "#e2ddd5",
+  "#dde2dc"
+];
+
+function topicText(t){ return typeof t === "string" ? t : t.text; }
+function isAction(t){ return typeof t !== "string" && t.action; }
+
+function moduleProgress(mi){
+  const total = modules[mi].topics.length;
+  const done = modules[mi].topics.reduce((n, t, ti) => n + (completed.has(mi+'-'+ti) ? 1 : 0), 0);
+  return { done, total, pct: Math.round((done/total)*100) };
+}
+
+function renderHome(){
+  const grid = document.getElementById("stepGrid");
+  grid.innerHTML = modules.map((m, mi) => {
+    const { done, total, pct } = moduleProgress(mi);
+    const badge = pct === 0 ? "Belum mulai" : pct === 100 ? "Selesai" : "Sedang berjalan";
+    const btnLabel = pct === 0 ? "Mulai" : pct === 100 ? "Lihat lagi" : "Lanjutkan";
+    return `
+      <div class="step-card" style="background:${stepColors[mi % stepColors.length]}" onclick="openModule(${mi})">
+        <span class="step-badge">${badge}</span>
+        <div class="step-card-title">Step ${String(mi+1).padStart(2,'0')}: ${m.title}</div>
+        <div class="step-card-desc">${m.desc}</div>
+        <div class="step-stats">${total} chapter</div>
+        <div class="step-progress-label"><span>Progress</span><span>${pct}%</span></div>
+        <div class="step-progress-track"><div class="step-progress-fill" style="width:${pct}%"></div></div>
+        <div class="step-card-footer">
+          <span>Chapter: ${done}/${total}</span>
+          <button class="step-go-btn" onclick="event.stopPropagation(); openModule(${mi})">${btnLabel}</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function goHome(){
+  if (readingObserver) { readingObserver.disconnect(); readingObserver = null; }
+  currentView = "home";
+  document.getElementById("homeView").classList.add("open");
+  document.getElementById("gridView").style.display = "none";
+  document.getElementById("readingView").classList.remove("open");
+  renderHome();
+  if (window.innerWidth <= 860) toggleSidebar(false);
+}
+
+function renderSidebar(){
+  const list = document.getElementById("moduleList");
+  list.innerHTML = "";
+  modules.forEach((m, mi) => {
+    const div = document.createElement("div");
+    const { pct: mPct } = moduleProgress(mi);
+    const moduleDone = mPct === 100;
+    div.className = "module" + (expandedModules.has(mi) ? " open" : "") + (mi === currentModule ? " active" : "") + (moduleDone ? " done" : "");
+    div.innerHTML = `
+      <div class="module-head" onclick="toggleModuleExpand(${mi})">
+        <span class="module-num">${moduleDone ? '✓' : String(mi+1).padStart(2,'0')}</span>
+        <span class="module-title">${m.title}</span>
+        ${moduleDone ? '<span class="module-done-tag">Selesai</span>' : ''}
+        <span class="module-chevron">›</span>
+      </div>
+      <div class="lesson-list">
+        ${m.topics.map((t, ti) => `
+          <div class="lesson ${isAction(t) ? 'action' : ''} ${completed.has(mi+'-'+ti) ? 'active' : ''}" onclick="event.stopPropagation(); openTopic(${mi}, ${ti})">
+            <span class="lesson-dot"></span><span>${topicText(t)}</span>
+          </div>
+        `).join("")}
+      </div>
+    `;
+    list.appendChild(div);
+  });
+  updateProgress();
+}
+
+function toggleModuleExpand(mi){
+  if (expandedModules.has(mi)) expandedModules.delete(mi);
+  else expandedModules.add(mi);
+  renderSidebar();
+}
+
+function renderMain(){
+  const m = modules[currentModule];
+  document.getElementById("moduleEyebrow").textContent = `Step ${String(currentModule+1).padStart(2,'0')}`;
+  document.getElementById("moduleTitle").textContent = m.title;
+  document.getElementById("moduleDesc").textContent = m.desc;
+  const { pct: modulePct } = moduleProgress(currentModule);
+  document.getElementById("moduleDonePill").style.display = modulePct === 100 ? "inline-flex" : "none";
+
+  const grid = document.getElementById("topicGrid");
+  grid.innerHTML = m.topics.map((t, ti) => {
+    const done = completed.has(currentModule+'-'+ti);
+    return `
+      <div class="topic-card ${isAction(t) ? 'action' : ''} ${done ? 'done' : ''}" onclick="openTopic(${currentModule}, ${ti})">
+        <div class="topic-check" onclick="event.stopPropagation(); toggleTopic(${currentModule}, ${ti})">${done ? '✓' : ''}</div>
+        <div class="topic-text">${topicText(t)}</div>
+        <button class="topic-mark-btn" onclick="event.stopPropagation(); toggleTopic(${currentModule}, ${ti})">${done ? '✓ Selesai' : 'Tandai selesai'}</button>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("prevBtn").disabled = currentModule === 0;
+  document.getElementById("nextBtn").textContent = currentModule === modules.length - 1 ? "Selesai" : "Step selanjutnya →";
+  document.getElementById("nextBtn").disabled = currentModule === modules.length - 1;
+}
+
+function toggleTopic(mi, ti){
+  const key = mi+'-'+ti;
+  if (completed.has(key)) completed.delete(key); else completed.add(key);
+  renderSidebar();
+  renderMain();
+  if (readingObserver) syncReadStatus(mi, ti);
+}
+
+function selectModule(mi){
+  if (readingTopic) closeReading();
+  currentModule = mi;
+  currentView = "step";
+  document.getElementById("homeView").classList.remove("open");
+  document.getElementById("readingView").classList.remove("open");
+  document.getElementById("gridView").style.display = "";
+  renderSidebar();
+  renderMain();
+  if (window.innerWidth <= 860) toggleSidebar(false);
+}
+
+function resumeTopicIndex(mi){
+  const topics = modules[mi].topics;
+  for (let ti = 0; ti < topics.length; ti++){
+    if (!completed.has(mi+'-'+ti)) return ti;
+  }
+  return topics.length - 1;
+}
+
+function openModule(mi){
+  selectModule(mi);
+  openTopic(mi, resumeTopicIndex(mi));
+}
+
+function goModule(dir){
+  const next = currentModule + dir;
+  if (next < 0 || next >= modules.length) return;
+  openModule(next);
+}
+
+function updateProgress(){
+  const total = modules.reduce((sum, m) => sum + m.topics.length, 0);
+  const done = completed.size;
+  document.getElementById("progressText").textContent = `${done} / ${total} chapter`;
+  document.getElementById("progressPercent").textContent = `${Math.round((done/total)*100)}%`;
+  document.getElementById("progressFill").style.width = `${(done/total)*100}%`;
+}
+
+function toggleSidebar(force){
+  const sb = document.getElementById("sidebar");
+  const backdrop = document.getElementById("sidebarBackdrop");
+  const willOpen = force === false ? false : !sb.classList.contains("open");
+  sb.classList.toggle("open", willOpen);
+  backdrop.classList.toggle("show", willOpen);
+  document.body.style.overflow = willOpen ? "hidden" : "";
+}
+
+/* ---------- Reading view: buka materi, auto-checklist saat scroll sampai bawah ---------- */
+let readingTopic = null; // {mi, ti}
+let readingObserver = null;
+
+function placeholderBody(title){
+  // Placeholder isi materi, dipakai untuk topik yang belum ada konten aslinya di topicContent.
+  return [
+    `Ini adalah placeholder untuk materi "${title}". Konten asli akan ditulis di bagian ini nanti.`,
+    "Paragraf ini sengaja dibuat cukup panjang supaya kamu bisa lihat bagaimana halaman baca bekerja: kamu scroll dari atas sampai bawah, dan begitu sampai di ujung materi, kotak checklist di daftar materi akan otomatis tercentang tanpa perlu klik manual.",
+    "Kamu tetap bisa menandai materi selesai secara manual kapan saja lewat lingkaran centang di kartu materi, tanpa harus membaca sampai habis.",
+    "Ketika konten asli sudah siap, tinggal ganti isi placeholder ini dengan teks, gambar, atau video sebenarnya. Struktur halaman dan mekanisme checklist otomatis tetap akan berjalan sama seperti sekarang.",
+    "Sampai di sini, kamu sudah membaca sampai akhir materi ini."
+  ].map(p => `<p>${p}</p>`).join("");
+}
+
+function articleBodyFor(title){
+  const illus = topicIllustration[title] || "";
+  const paragraphs = topicContent[title];
+  if(paragraphs){
+    return illus + paragraphs.map(p => p.trim().startsWith("<") ? p : `<p>${p}</p>`).join("");
+  }
+  return illus + placeholderBody(title);
+}
+
+function openTopic(mi, ti){
+  readingTopic = { mi, ti };
+  currentModule = mi;
+  currentView = "reading";
+  expandedModules.add(mi);
+  const t = modules[mi].topics[ti];
+  const title = topicText(t);
+
+  document.getElementById("articleTitle").textContent = title;
+  document.getElementById("articleBody").innerHTML = articleBodyFor(title);
+  document.getElementById("homeView").classList.remove("open");
+  document.getElementById("gridView").style.display = "none";
+  document.getElementById("readingView").classList.add("open");
+  renderSidebar();
+
+  document.getElementById("readPrevBtn").disabled = (mi === 0 && ti === 0);
+  const isLastTopicInModule = ti === modules[mi].topics.length - 1;
+  const isLast = mi === modules.length - 1 && isLastTopicInModule;
+  const hasNextModule = isLastTopicInModule && mi < modules.length - 1;
+  document.getElementById("readNextBtn").disabled = isLast;
+  document.getElementById("readNextBtn").textContent = isLast
+    ? "Materi terakhir"
+    : hasNextModule
+      ? `Lanjut ke Step ${String(mi+2).padStart(2,'0')} →`
+      : "Materi selanjutnya →";
+
+  const banner = document.getElementById("moduleEndBanner");
+  if (isLastTopicInModule) {
+    banner.style.display = "flex";
+    document.getElementById("moduleEndTitle").textContent = `Akhir Step ${String(mi+1).padStart(2,'0')}: ${modules[mi].title}`;
+    document.getElementById("moduleEndSub").textContent = isLast
+      ? "Kamu sudah menyelesaikan seluruh Starter Kit ini."
+      : `Lanjut ke Step ${String(mi+2).padStart(2,'0')}: ${modules[mi+1].title}.`;
+  } else {
+    banner.style.display = "none";
+  }
+
+  syncReadStatus(mi, ti);
+  window.scrollTo({ top: 0, behavior: "instant" });
+
+  if (readingObserver) readingObserver.disconnect();
+  const sentinel = document.getElementById("articleSentinel");
+  readingObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const key = mi+'-'+ti;
+        if (!completed.has(key)) {
+          completed.add(key);
+          renderSidebar();
+          syncReadStatus(mi, ti);
+        }
+      }
+    });
+  }, { threshold: 1.0 });
+  readingObserver.observe(sentinel);
+}
+
+function syncReadStatus(mi, ti){
+  const done = completed.has(mi+'-'+ti);
+  const badge = document.getElementById("readStatus");
+  badge.textContent = done ? "✓ Sudah selesai" : "Tandai selesai";
+  badge.classList.toggle("done", done);
+}
+
+function toggleCurrentReadingTopic(){
+  if (!readingTopic) return;
+  const { mi, ti } = readingTopic;
+  toggleTopic(mi, ti);
+}
+
+function copyPromptBox(btn){
+  const box = btn.closest(".prompt-label").nextElementSibling;
+  const text = box.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = "Disalin ✓";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove("copied");
+    }, 1500);
+  });
+}
+
+function closeReading(){
+  if (readingObserver) { readingObserver.disconnect(); readingObserver = null; }
+  document.getElementById("readingView").classList.remove("open");
+  document.getElementById("gridView").style.display = "";
+  readingTopic = null;
+}
+
+function stepTopic(dir){
+  if (!readingTopic) return;
+  let { mi, ti } = readingTopic;
+  ti += dir;
+  if (ti < 0) { mi -= 1; if (mi < 0) return; ti = modules[mi].topics.length - 1; }
+  if (ti >= modules[mi].topics.length) { mi += 1; if (mi >= modules.length) return; ti = 0; }
+  currentModule = mi;
+  openTopic(mi, ti);
+}
+
+renderSidebar();
+renderMain();
+goHome();
+</script>
+
+</body>
+</html>
